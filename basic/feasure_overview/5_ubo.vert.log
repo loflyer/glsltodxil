@@ -1,0 +1,504 @@
+[D] begin to dump hw reg setting in compile arguments:
+[D] UsharpBase:   0
+[D] MaxUsharpReg: 0
+[D] MaxTsharpReg: 0
+[D] MaxSsharpReg: 0
+[D] MaxCsharpReg: 0
+[D] MaxCbReg:     0
+[D] ------------------------Begin Dump SC LLVM Module Info------------------------ [0000]
+[D] target datalayout = "e-m:e-p:32:32-i1:32-i8:32-i16:32-i32:32-i64:64-f16:32-f32:32-f64:64-n8:16:32:64"
+target triple = "dxil-ms-dx"
+
+%dx.types.Handle = type { i8* }
+%dx.types.CBufRet.i32 = type { i32, i32, i32, i32 }
+%__ubo0 = type { [48 x float] }
+%__ubo1 = type { [28 x float] }
+%__ubo3 = type { [12 x float] }
+
+; Function Attrs: nounwind readonly
+declare %dx.types.Handle @dx.op.createHandle(i32, i8, i32, i32, i1) #0
+
+; Function Attrs: nounwind readnone
+declare float @dx.op.loadInput.f32(i32, i32, i32, i8, i32) #1
+
+; Function Attrs: nounwind readonly
+declare %dx.types.CBufRet.i32 @dx.op.cbufferLoadLegacy.i32(i32, %dx.types.Handle, i32) #0
+
+; Function Attrs: nounwind readonly
+declare %dx.types.CBufRet.i32 @dx.extop.cbufferLoadLegacy.i32(i32, %dx.types.Handle, i32) #0
+
+; Function Attrs: nounwind
+declare void @dx.op.storeOutput.f32(i32, i32, i32, i8, float) #2
+
+define void @main() {
+  %1 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 2, i32 0, i32 0, i1 false)
+  %2 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 2, i32 1, i32 1, i1 false)
+  %3 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 2, i32 1, i32 2, i1 false)
+  %4 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 2, i32 2, i32 3, i1 false)
+  %5 = call float @dx.op.loadInput.f32(i32 4, i32 0, i32 0, i8 0, i32 undef)
+  %6 = call float @dx.op.loadInput.f32(i32 4, i32 0, i32 0, i8 1, i32 undef)
+  %7 = call float @dx.op.loadInput.f32(i32 4, i32 0, i32 0, i8 2, i32 undef)
+  %8 = call %dx.types.CBufRet.i32 @dx.op.cbufferLoadLegacy.i32(i32 59, %dx.types.Handle %2, i32 6)
+  %9 = extractvalue %dx.types.CBufRet.i32 %8, 0
+  %10 = extractvalue %dx.types.CBufRet.i32 %8, 1
+  %11 = extractvalue %dx.types.CBufRet.i32 %8, 2
+  %12 = extractvalue %dx.types.CBufRet.i32 %8, 3
+  %13 = call %dx.types.CBufRet.i32 @dx.extop.cbufferLoadLegacy.i32(i32 275, %dx.types.Handle %1, i32 36)
+  %14 = extractvalue %dx.types.CBufRet.i32 %13, 0
+  %15 = extractvalue %dx.types.CBufRet.i32 %13, 1
+  %16 = extractvalue %dx.types.CBufRet.i32 %13, 2
+  %17 = extractvalue %dx.types.CBufRet.i32 %13, 3
+  %18 = bitcast i32 %9 to float
+  %19 = bitcast i32 %14 to float
+  %20 = fadd fast float %18, %19
+  %21 = bitcast i32 %10 to float
+  %22 = bitcast i32 %15 to float
+  %23 = fadd fast float %21, %22
+  %24 = bitcast i32 %11 to float
+  %25 = bitcast i32 %16 to float
+  %26 = fadd fast float %24, %25
+  %27 = call %dx.types.CBufRet.i32 @dx.op.cbufferLoadLegacy.i32(i32 59, %dx.types.Handle %4, i32 0)
+  %28 = extractvalue %dx.types.CBufRet.i32 %27, 0
+  %29 = extractvalue %dx.types.CBufRet.i32 %27, 1
+  %30 = extractvalue %dx.types.CBufRet.i32 %27, 2
+  %31 = extractvalue %dx.types.CBufRet.i32 %27, 3
+  %32 = bitcast i32 %28 to float
+  %33 = fadd fast float %20, %32
+  %34 = bitcast i32 %29 to float
+  %35 = fadd fast float %23, %34
+  %36 = bitcast i32 %30 to float
+  %37 = fadd fast float %26, %36
+  %38 = fadd fast float %33, %5
+  %39 = fadd fast float %35, %6
+  %40 = fadd fast float %37, %7
+  %41 = bitcast i32 %12 to float
+  %42 = bitcast i32 1036831949 to float
+  %43 = fadd fast float %41, %42
+  %44 = bitcast i32 %17 to float
+  %45 = fadd fast float %43, %44
+  %46 = bitcast i32 %31 to float
+  %47 = fadd fast float %45, %46
+  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 0, float %38)
+  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 1, float %39)
+  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 2, float %40)
+  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 3, float %47)
+  ret void
+}
+
+attributes #0 = { nounwind readonly }
+attributes #1 = { nounwind readnone }
+attributes #2 = { nounwind }
+
+!llvm.ident = !{!0}
+!dx.version = !{!1}
+!dx.valver = !{!2}
+!dx.shaderModel = !{!3}
+!dx.resources = !{!4}
+!dx.typeAnnotations = !{!9}
+!dx.entryPoints = !{!13}
+!dx.source.contents = !{!21, !22, !23}
+!dx.vk.xfb = !{}
+
+!0 = !{!"Mesa version 22.04@release"}
+!1 = !{i32 1, i32 1}
+!2 = !{i32 1, i32 4}
+!3 = !{!"vs", i32 6, i32 1}
+!4 = !{null, null, !5, null}
+!5 = !{!6, !7, !8}
+!6 = !{i32 0, %__ubo0* undef, !"__ubo0", i32 0, i32 0, i32 1, i32 192, null}
+!7 = !{i32 1, [2 x %__ubo1]* undef, !"__ubo1", i32 0, i32 1, i32 2, i32 112, null}
+!8 = !{i32 2, %__ubo3* undef, !"__ubo3", i32 0, i32 3, i32 1, i32 48, null}
+!9 = !{i32 1, void ()* @main, !10}
+!10 = !{!11}
+!11 = !{i32 0, !12, !12}
+!12 = !{}
+!13 = !{void ()* @main, !"main", !14, !4, !20}
+!14 = !{!15, !18, null}
+!15 = !{!16}
+!16 = !{i32 0, !"TEXCOORD", i8 9, i8 0, !17, i8 0, i32 1, i8 3, i32 0, i8 0, !12}
+!17 = !{i32 0}
+!18 = !{!19}
+!19 = !{i32 0, !"TEXCOORD", i8 9, i8 0, !17, i8 2, i32 1, i8 4, i32 0, i8 0, !12}
+!20 = !{i32 0, i64 1048576}
+!21 = !{!"num_images", i32 0}
+!22 = !{!"num_ssbos", i32 0}
+!23 = !{!"float_controls_execution_mode", i32 0}
+
+
+[D] CrfCntForInput equals CrfCount + HW_REG_START
+[D] CrfCntForInput for VS push mode: 8
+[D] ------------------------Begin Dump SC Shader Info------------------------ [0000]
+[D] SCShaderVersion:                  :97
+[D] SCShaderType:                     :0
+[D] Dump Shader Flags:
+[D]         bOutputDepth              :0
+[D]         bOutputStencil            :0
+[D]         bTexKill                  :0
+[D]         bDiscard                  :0
+[D]         bOutputMask               :0
+[D]         bHasSampleFreqInput       :0
+[D]         bHasPointCoord            :0
+[D]         bHasEmitMask              :0
+[D]         bHasEmitAlpha              :0
+[D]         bPackWL                   :0
+[D]         bPackWC                   :0
+[D]         bNeedLinearW              :0
+[D]         bNeedCentroidW            :0
+[D]         bPosCentroid              :0
+[D]         bFlatShading              :0
+[D]         bConservativeDepth        :0
+[D]         bConservativeDepthMode    :0
+[D]         bForceEarlyDepthStencil   :0
+[D]         bLSBuffer                 :0
+[D]         bNeedPatchMovimm          :0
+[D]         bHwCbMode                 :1
+[D]         bMapImageToTSharp         :0
+[D]         bPackFaceId               :0
+[D]         bPackSampleId             :0
+[D]         bPackPrimId               :0
+[D]         bHasSampleLd2DMS          :0
+[D]         bIntpAtSample             :0
+[D]         bHasGMFlush               :0
+[D]         bHasDouble                :0
+[D]         bPixelCenterInteger       :0
+[D]         bOriginUpperLeft          :0
+[D]         bNeedPatchVerticesIn      :0
+[D]         bNeedDenormPreserve       :0
+[D]         bHasDfdy                  :0
+[D]         bFp16DenormPerserve       :0
+[D]         bFp32DenormPerserve       :0
+[D]         bFp64DenormPerserve       :0
+[D]         bFp16RoundingZero         :0
+[D]         bFp32RoundingZero         :0
+[D]         bFp64RoundingZero         :0
+[D]         bDX9FConstRelative        :0
+[D] Dump Input Flags:
+[D]         bHasVertexID              :0
+[D]         bHasRHW                   :0
+[D]         bHasIsFrontFace           :0
+[D]         bHasSampleMask            :0
+[D]         bHasSampleIndex           :0
+[D]         bHasSamplePos             :0
+[D]         bHasPosition              :0
+[D]         bHasRHWCentroid           :0
+[D]         bHasBaseVertexID          :0
+[D]         bHasBaseInstanceID        :0
+[D]         bHasDrawID                :0
+[D]         bHasPrimId                :0
+[D]         bHasInstanceID            :0
+[D]         bHasShadingRate           :0
+[D] Dump Output Flags:
+[D]         bHasPointSize             :0
+[D]         bHasRTArrayIdx            :0
+[D]         bHasClipDistanceSign      :0
+[D]         bHasOMask                 :0
+[D]         bHasVPArrayIndex          :0
+[D]         bHasClipDistance          :0
+[D]         bHasPrimId                :0
+[D]         bHasEdgeFlag              :0
+[D]         bHasPrimShadingRate       :0
+[D] 
+
+Dump Input Info:
+[D] EntryCount              :3
+[D] UsedBitMask             :1
+[D] HwVectorCount           :1
+[D] Entry 0------------------------------->
+[D] Semantic=VARYING_DX10	55
+[D] SemanticIndex           :0
+[D] HwRegNo                 :4
+[D] IoIndex                 :0
+[D] ChannelIndex            :0
+[D] Used                    :1
+[D] bInterpolate            :0
+[D] bCentroid               :0
+[D] bPerspective            :0
+[D] bSampleFreq             :0
+[D] bIntVarying             :0
+[D] bUIntVarying            :0
+[D] bIntpAtCentroid         :0
+[D] bIntpAtCenter           :0
+[D] bIntpAtOffsetPxPy       :0
+[D] bIntpAtSample           :0
+[D] b64bits                 :0
+[D] bCanPack                :1
+[D] ExtendedIndex           :0
+[D] Shared                  :0
+[D] Entry 1------------------------------->
+[D] Semantic=VARYING_DX10	55
+[D] SemanticIndex           :0
+[D] HwRegNo                 :5
+[D] IoIndex                 :0
+[D] ChannelIndex            :1
+[D] Used                    :1
+[D] bInterpolate            :0
+[D] bCentroid               :0
+[D] bPerspective            :0
+[D] bSampleFreq             :0
+[D] bIntVarying             :0
+[D] bUIntVarying            :0
+[D] bIntpAtCentroid         :0
+[D] bIntpAtCenter           :0
+[D] bIntpAtOffsetPxPy       :0
+[D] bIntpAtSample           :0
+[D] b64bits                 :0
+[D] bCanPack                :1
+[D] ExtendedIndex           :0
+[D] Shared                  :0
+[D] Entry 2------------------------------->
+[D] Semantic=VARYING_DX10	55
+[D] SemanticIndex           :0
+[D] HwRegNo                 :6
+[D] IoIndex                 :0
+[D] ChannelIndex            :2
+[D] Used                    :1
+[D] bInterpolate            :0
+[D] bCentroid               :0
+[D] bPerspective            :0
+[D] bSampleFreq             :0
+[D] bIntVarying             :0
+[D] bUIntVarying            :0
+[D] bIntpAtCentroid         :0
+[D] bIntpAtCenter           :0
+[D] bIntpAtOffsetPxPy       :0
+[D] bIntpAtSample           :0
+[D] b64bits                 :0
+[D] bCanPack                :1
+[D] ExtendedIndex           :0
+[D] Shared                  :0
+[D] 
+
+Dump Output Info:
+[D] EntryCount              :4
+[D] UsedBitMask             :1
+[D] HwVectorCount           :1
+[D] Entry 0------------------------------->
+[D] Semantic=VARYING_DX10	55
+[D] SemanticIndex           :0
+[D] HwRegNo                 :0
+[D] IoIndex                 :0
+[D] ChannelIndex            :0
+[D] Used                    :1
+[D] bInterpolate            :1
+[D] bCentroid               :0
+[D] bPerspective            :1
+[D] bSampleFreq             :0
+[D] bIntVarying             :0
+[D] bUIntVarying            :0
+[D] bIntpAtCentroid         :0
+[D] bIntpAtCenter           :0
+[D] bIntpAtOffsetPxPy       :0
+[D] bIntpAtSample           :0
+[D] b64bits                 :0
+[D] bCanPack                :1
+[D] ExtendedIndex           :0
+[D] Shared                  :0
+[D] Entry 1------------------------------->
+[D] Semantic=VARYING_DX10	55
+[D] SemanticIndex           :0
+[D] HwRegNo                 :0
+[D] IoIndex                 :0
+[D] ChannelIndex            :1
+[D] Used                    :1
+[D] bInterpolate            :1
+[D] bCentroid               :0
+[D] bPerspective            :1
+[D] bSampleFreq             :0
+[D] bIntVarying             :0
+[D] bUIntVarying            :0
+[D] bIntpAtCentroid         :0
+[D] bIntpAtCenter           :0
+[D] bIntpAtOffsetPxPy       :0
+[D] bIntpAtSample           :0
+[D] b64bits                 :0
+[D] bCanPack                :1
+[D] ExtendedIndex           :0
+[D] Shared                  :0
+[D] Entry 2------------------------------->
+[D] Semantic=VARYING_DX10	55
+[D] SemanticIndex           :0
+[D] HwRegNo                 :0
+[D] IoIndex                 :0
+[D] ChannelIndex            :2
+[D] Used                    :1
+[D] bInterpolate            :1
+[D] bCentroid               :0
+[D] bPerspective            :1
+[D] bSampleFreq             :0
+[D] bIntVarying             :0
+[D] bUIntVarying            :0
+[D] bIntpAtCentroid         :0
+[D] bIntpAtCenter           :0
+[D] bIntpAtOffsetPxPy       :0
+[D] bIntpAtSample           :0
+[D] b64bits                 :0
+[D] bCanPack                :1
+[D] ExtendedIndex           :0
+[D] Shared                  :0
+[D] Entry 3------------------------------->
+[D] Semantic=VARYING_DX10	55
+[D] SemanticIndex           :0
+[D] HwRegNo                 :0
+[D] IoIndex                 :0
+[D] ChannelIndex            :3
+[D] Used                    :1
+[D] bInterpolate            :1
+[D] bCentroid               :0
+[D] bPerspective            :1
+[D] bSampleFreq             :0
+[D] bIntVarying             :0
+[D] bUIntVarying            :0
+[D] bIntpAtCentroid         :0
+[D] bIntpAtCenter           :0
+[D] bIntpAtOffsetPxPy       :0
+[D] bIntpAtSample           :0
+[D] b64bits                 :0
+[D] bCanPack                :1
+[D] ExtendedIndex           :0
+[D] Shared                  :0
+[D] 
+
+Dump Patch Constant Info:
+[D] EntryCount              :0
+[D] UsedBitMask             :0
+[D] HwVectorCount           :0
+[D] Dump Cbv  Info:
+[D] ResRangeCount              :3
+[D]         ResRangeID                 :0
+[D]         ResIndex                   :0
+[D]         ResCount                   :1
+[D]         HwRegNo                    :12
+[D]         ResKind                    :0
+[D]         ComponentType              :0
+[D]         HeapIndex                  :0
+[D]         SpaceID                    :0
+[D]         SpaceID                    :0
+[D]         Reduction                  :0
+[D]         GlobalCoherent             :0
+[D]         Rov                        :0
+[D]         MappedToTSharp             :0
+[D]         BufSize                    :16
+[D]         StartInCb                  :144
+[D]         ResRangeID                 :1
+[D]         ResIndex                   :1
+[D]         ResCount                   :2
+[D]         HwRegNo                    :4
+[D]         ResKind                    :0
+[D]         ComponentType              :0
+[D]         HeapIndex                  :0
+[D]         SpaceID                    :0
+[D]         SpaceID                    :0
+[D]         Reduction                  :0
+[D]         GlobalCoherent             :0
+[D]         Rov                        :0
+[D]         MappedToTSharp             :0
+[D]         BufSize                    :16
+[D]         StartInCb                  :96
+[D]         ResRangeID                 :2
+[D]         ResIndex                   :3
+[D]         ResCount                   :1
+[D]         HwRegNo                    :0
+[D]         ResKind                    :0
+[D]         ComponentType              :0
+[D]         HeapIndex                  :0
+[D]         SpaceID                    :0
+[D]         SpaceID                    :0
+[D]         Reduction                  :0
+[D]         GlobalCoherent             :0
+[D]         Rov                        :0
+[D]         MappedToTSharp             :0
+[D]         BufSize                    :16
+[D]         StartInCb                  :0
+[D] Dump Srv  Info:
+[D] ResRangeCount              :0
+[D] Dump Sampler  Info:
+[D] ResRangeCount              :0
+[D] Dump Uav  Info:
+[D]         ResRangeCount              :0
+[D] Dump Resource Query  Info:
+[D]         TexSizeQueryCnt            :0
+[D]         ImgSizeQueryCnt            :0
+[D]         TexSamplePosQueryCnt       :0
+[D]         OglSsbQueryCnt             :0
+[D] Dump Cb Insternal Desc  Info:
+[D]         CbInternalUsedMask     :0
+[D]         CbInternalDesc Offset     :0
+[D]         CbInternalDesc Size       :0
+[D]         CbInternalDesc Offset     :0
+[D]         CbInternalDesc Size       :0
+[D]         CbInternalDesc Offset     :0
+[D]         CbInternalDesc Size       :0
+[D]         CbInternalDesc Offset     :0
+[D]         CbInternalDesc Size       :0
+[D]         CbInternalDesc Offset     :0
+[D]         CbInternalDesc Size       :0
+[D]         CbInternalDesc Offset     :0
+[D]         CbInternalDesc Size       :0
+[D]         CbInternalDesc Offset     :0
+[D]         CbInternalDesc Size       :0
+[D]         CbInternalDesc Offset     :0
+[D]         CbInternalDesc Size       :0
+[D]         CbInternalDesc Offset     :0
+[D]         CbInternalDesc Size       :0
+[D]         CbInternalDesc Offset     :0
+[D]         CbInternalDesc Size       :0
+[D]         CbInternalDesc Offset     :0
+[D]         CbInternalDesc Size       :0
+[D]         CbInternalDesc Offset     :0
+[D]         CbInternalDesc Size       :0
+[D]         CbInternalDesc Offset     :0
+[D]         CbInternalDesc Size       :0
+[D]         CbInternalDesc Offset     :0
+[D]         CbInternalDesc Size       :0
+[D]         CbInternalDesc Offset     :0
+[D]         CbInternalDesc Size       :0
+[D]         CbInternalDesc Offset     :0
+[D]         CbInternalDesc Size       :0
+[D]         CbInternalDesc Offset     :0
+[D]         CbInternalDesc Size       :0
+[D]         CbInternalDesc Offset     :0
+[D]         CbInternalDesc Size       :0
+[D]         CbInternalDesc Offset     :0
+[D]         CbInternalDesc Size       :0
+[D] Dump ImmPatch  Info:
+[D] Num ImmPatches:
+[D] Dump Vulkan Xfb  Info:
+[D]         XfbItemCount              :0
+[D] Dump Other Shader Info:
+[D]         TSharpForCb               :-1
+[D]         ViewCount                 :0
+[D]         SharedVC                  :0
+[D]         SimdMode                  :0
+[D]         EuBlendCrf                :0
+[D]         OglImageNum               :0
+[D]         OglStorageBufferNum       :0
+[D]         OutPosEntryIdx            :0
+[D]         OutPointSizeEntryIdx      :0
+[D]         OutRTArrayIdxEntryIdx     :0
+[D]         OutFakeDistSignEntryIdx   :0
+[D]         OutVPArrayIdxEntryIdx     :0
+[D]         OutputEdgeFlagEntryIdx    :0
+[D]         PxPyCount                 :0
+[D]         PcCount                   :0
+[D]         PMSize                    :0
+[D]         DxBufCounterMask          :0
+[D]         DxBufCounterResID         :0
+[D]         VsNormalAttrCrfStart      :4
+[D]         ConstInfoFlag             :0
+[D] VS CrfCount        : 12 ShareMemSize= 0
+[D] VS InstrCount        : 9
+[D] begin to dump shader code:
+[D] --------------------------------------------------------------------------
+[D]    PC                         Instruction                                  Content                                                                                             
+  0x0000         0x480000000000100c 0x2000000000000000           MOV.rp2                   r0             ,cb12           
+  0x0001         0x0300000000001004 0x2000000000000000           FADD.rp2                  r0             ,r0             ,cb4            
+  0x0002         0x0300000010000000 0x2000000000000000           FADD.rp2                  r0             ,cb0            ,r0             
+  0x0003         0x0300000000040000 0xa6000ff004000000           FADD.rp2                  void           ,r4             ,r0             
+                                                                +EMITF                     vso[0].xyz     ,fwd            
+  0x0004         0x4b0000003dcccccd 0x0000003000000000           MOVIMM                    r3             ,0x3dcccccd     
+  0x0005         0x0300000000031007 0x0004003000000000           FADD.dly1                 r3             ,r3             ,cb7            
+  0x0006         0x03000000100f0003 0x0004003000000000           FADD.dly1                 r3             ,cb15           ,r3             
+  0x0007         0x0300000010030003 0x86040ff00f000000           FADD.dly1                 void           ,cb3            ,r3             
+                                                                +EMITF.ve                  vso[0].w       ,fwd            
+  0x0008         0xc300000000000000 0x0000000000000000           JUMP                      0              
+[D] --------------------------------------------------------------------------
