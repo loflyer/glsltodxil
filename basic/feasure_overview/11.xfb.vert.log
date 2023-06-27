@@ -10,108 +10,153 @@
 target triple = "dxil-ms-dx"
 
 %dx.types.Handle = type { i8* }
-%dx.types.ResRet.i32 = type { i32, i32, i32, i32, i32 }
-%struct.RWByteAddressBuffer = type { i32 }
+%dx.types.CBufRet.i32 = type { i32, i32, i32, i32 }
+%__ubo0 = type { [0 x float] } ; 长度为0的数组
+%__ubo1 = type { [16 x float] }
+%__ubo2 = type { [8 x float] }
 
 ; Function Attrs: nounwind readonly
 declare %dx.types.Handle @dx.op.createHandle(i32, i8, i32, i32, i1) #0
 
-; Function Attrs: nounwind readnone
-declare i32 @dx.op.loadInput.i32(i32, i32, i32, i8, i32) #1
-
 ; Function Attrs: nounwind readonly
-declare %dx.types.ResRet.i32 @dx.op.bufferLoad.i32(i32, %dx.types.Handle, i32, i32) #0
-
-; Function Attrs: nounwind readnone
-declare float @dx.op.loadInput.f32(i32, i32, i32, i8, i32) #1
+declare %dx.types.CBufRet.i32 @dx.op.cbufferLoadLegacy.i32(i32, %dx.types.Handle, i32) #0
 
 ; Function Attrs: nounwind
-declare void @dx.op.storeOutput.f32(i32, i32, i32, i8, float) #2
+declare void @dx.op.storeOutput.f32(i32, i32, i32, i8, float) #1
 
 define void @main() {
+  %1 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 2, i32 0, i32 0, i1 false)
+  %2 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 2, i32 1, i32 1, i1 false)
+  %3 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 2, i32 2, i32 2, i1 false)
+
+  %4 = call %dx.types.CBufRet.i32 @dx.op.cbufferLoadLegacy.i32(i32 59, %dx.types.Handle %2, i32 0)
+  %5 = extractvalue %dx.types.CBufRet.i32 %4, 0
+  %6 = extractvalue %dx.types.CBufRet.i32 %4, 1
+  %7 = extractvalue %dx.types.CBufRet.i32 %4, 2
+  %8 = extractvalue %dx.types.CBufRet.i32 %4, 3
+
+  %9 = call %dx.types.CBufRet.i32 @dx.op.cbufferLoadLegacy.i32(i32 59, %dx.types.Handle %2, i32 1)
+  %10 = extractvalue %dx.types.CBufRet.i32 %9, 0
+  %11 = extractvalue %dx.types.CBufRet.i32 %9, 1
+  %12 = extractvalue %dx.types.CBufRet.i32 %9, 2
+  %13 = extractvalue %dx.types.CBufRet.i32 %9, 3
+
+  %14 = call %dx.types.CBufRet.i32 @dx.op.cbufferLoadLegacy.i32(i32 59, %dx.types.Handle %2, i32 2)
+  %15 = extractvalue %dx.types.CBufRet.i32 %14, 0
+  %16 = extractvalue %dx.types.CBufRet.i32 %14, 1
+  %17 = extractvalue %dx.types.CBufRet.i32 %14, 2
+  %18 = extractvalue %dx.types.CBufRet.i32 %14, 3
+
+  %19 = call %dx.types.CBufRet.i32 @dx.op.cbufferLoadLegacy.i32(i32 59, %dx.types.Handle %2, i32 3)
+  %20 = extractvalue %dx.types.CBufRet.i32 %19, 0
+  %21 = extractvalue %dx.types.CBufRet.i32 %19, 1
+  %22 = extractvalue %dx.types.CBufRet.i32 %19, 2
+  %23 = extractvalue %dx.types.CBufRet.i32 %19, 3
+
+  %24 = call %dx.types.CBufRet.i32 @dx.op.cbufferLoadLegacy.i32(i32 59, %dx.types.Handle %3, i32 0)
+  %25 = extractvalue %dx.types.CBufRet.i32 %24, 0
+  %26 = extractvalue %dx.types.CBufRet.i32 %24, 1
+  %27 = extractvalue %dx.types.CBufRet.i32 %24, 2
+  %28 = extractvalue %dx.types.CBufRet.i32 %24, 3
+
+  %29 = call %dx.types.CBufRet.i32 @dx.op.cbufferLoadLegacy.i32(i32 59, %dx.types.Handle %3, i32 1)
+  %30 = extractvalue %dx.types.CBufRet.i32 %29, 0
+  %31 = extractvalue %dx.types.CBufRet.i32 %29, 1
+  %32 = extractvalue %dx.types.CBufRet.i32 %29, 2
+  %33 = extractvalue %dx.types.CBufRet.i32 %29, 3
   
-  # 资源类别 1 资源ID 0
-  %1 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 1, i32 0, i32 0, i1 false)
-  # 操作码 4  ID 2
-  %2 = call i32 @dx.op.loadInput.i32(i32 4, i32 2, i32 0, i8 0, i32 undef)
-  %3 = shl i32 %2, 4
-  %4 = call %dx.types.ResRet.i32 @dx.op.bufferLoad.i32(i32 68, %dx.types.Handle %1, i32 %3, i32 undef)
-  %5 = extractvalue %dx.types.ResRet.i32 %4, 0
-  %6 = extractvalue %dx.types.ResRet.i32 %4, 1
-  %7 = extractvalue %dx.types.ResRet.i32 %4, 2
-  %8 = extractvalue %dx.types.ResRet.i32 %4, 3
-  %9 = call float @dx.op.loadInput.f32(i32 4, i32 0, i32 0, i8 0, i32 undef)
-  %10 = call float @dx.op.loadInput.f32(i32 4, i32 0, i32 0, i8 1, i32 undef)
-  %11 = call float @dx.op.loadInput.f32(i32 4, i32 0, i32 0, i8 2, i32 undef)
-  %12 = call float @dx.op.loadInput.f32(i32 4, i32 0, i32 0, i8 3, i32 undef)
-  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 0, float %9)
-  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 1, float %10)
-  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 2, float %11)
-  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 3, float %12)
-  %13 = call float @dx.op.loadInput.f32(i32 4, i32 1, i32 0, i8 0, i32 undef)
-  %14 = call float @dx.op.loadInput.f32(i32 4, i32 1, i32 0, i8 1, i32 undef)
-  %15 = call float @dx.op.loadInput.f32(i32 4, i32 1, i32 0, i8 2, i32 undef)
-  %16 = call float @dx.op.loadInput.f32(i32 4, i32 1, i32 0, i8 3, i32 undef)
-  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 1, i8 0, float %13)
-  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 1, i8 1, float %14)
-  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 1, i8 2, float %15)
-  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 1, i8 3, float %16)
-  %17 = bitcast i32 %5 to float
-  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 0, float %17)
-  %18 = bitcast i32 %6 to float
-  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 1, float %18)
-  %19 = bitcast i32 %7 to float
-  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 2, float %19)
-  %20 = bitcast i32 %8 to float
-  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 3, float %20)
+  %34 = bitcast i32 %5 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 2, i32 0, i8 0, float %34)
+  %35 = bitcast i32 %6 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 2, i32 0, i8 1, float %35)
+  %36 = bitcast i32 %7 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 2, i32 0, i8 2, float %36)
+  %37 = bitcast i32 %8 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 2, i32 0, i8 3, float %37)
+  %38 = bitcast i32 %10 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 2, i32 1, i8 0, float %38)
+  %39 = bitcast i32 %11 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 2, i32 1, i8 1, float %39)
+  %40 = bitcast i32 %12 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 2, i32 1, i8 2, float %40)
+  %41 = bitcast i32 %13 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 2, i32 1, i8 3, float %41)
+  %42 = bitcast i32 %15 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 2, i32 2, i8 0, float %42)
+  %43 = bitcast i32 %16 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 2, i32 2, i8 1, float %43)
+  %44 = bitcast i32 %17 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 2, i32 2, i8 2, float %44)
+  %45 = bitcast i32 %18 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 2, i32 2, i8 3, float %45)
+  %46 = bitcast i32 %20 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 2, i32 3, i8 0, float %46)
+  %47 = bitcast i32 %21 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 2, i32 3, i8 1, float %47)
+  %48 = bitcast i32 %22 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 2, i32 3, i8 2, float %48)
+  %49 = bitcast i32 %23 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 2, i32 3, i8 3, float %49)
+  %50 = bitcast i32 %25 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 0, float %50)
+  %51 = bitcast i32 %26 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 1, float %51)
+  %52 = bitcast i32 %27 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 2, float %52)
+  %53 = bitcast i32 %28 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 3, float %53)
+  %54 = bitcast i32 %30 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 0, float %54)
+  %55 = bitcast i32 %31 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 1, float %55)
+  %56 = bitcast i32 %32 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 2, float %56)
+  %57 = bitcast i32 %33 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 3, float %57)
   ret void
 }
 
 attributes #0 = { nounwind readonly }
-attributes #1 = { nounwind readnone }
-attributes #2 = { nounwind }
+attributes #1 = { nounwind }
 
 !llvm.ident = !{!0}
 !dx.version = !{!1}
 !dx.valver = !{!2}
 !dx.shaderModel = !{!3}
 !dx.resources = !{!4}
-!dx.typeAnnotations = !{!7}
-!dx.entryPoints = !{!11}
-!dx.source.contents = !{!24, !25, !26}
+!dx.typeAnnotations = !{!9}
+!dx.entryPoints = !{!13}
+!dx.source.contents = !{!23, !24, !25}
 !dx.vk.xfb = !{}
 
 !0 = !{!"Mesa version 22.04@release"}
 !1 = !{i32 1, i32 1}
 !2 = !{i32 1, i32 4}
 !3 = !{!"vs", i32 6, i32 1}
-!4 = !{null, !5, null, null}
-!5 = !{!6}
-!6 = !{i32 0, %struct.RWByteAddressBuffer* undef, !"ogl_ssbos", i32 0, i32 0, i32 1, i32 11, i1 false, i1 false, i1 false, null}
-!7 = !{i32 1, void ()* @main, !8}
-!8 = !{!9}
-!9 = !{i32 0, !10, !10}
-!10 = !{}
-!11 = !{void ()* @main, !"main", !12, !4, !23}
-!12 = !{!13, !19, null}
-!13 = !{!14, !16, !18}
-!14 = !{i32 0, !"TEXCOORD", i8 9, i8 0, !15, i8 0, i32 1, i8 4, i32 0, i8 0, !10}
-!15 = !{i32 0}
-!16 = !{i32 1, !"TEXCOORD", i8 9, i8 0, !17, i8 0, i32 1, i8 4, i32 1, i8 0, !10}
-!17 = !{i32 1}
-!18 = !{i32 2, !"SV_VertexID", i8 5, i8 1, !15, i8 0, i32 1, i8 1, i32 2, i8 0, !10}
-!19 = !{!20, !21}
-!20 = !{i32 0, !"SV_Position", i8 9, i8 3, !15, i8 4, i32 1, i8 4, i32 0, i8 0, !10}
-!21 = !{i32 1, !"TEXCOORD", i8 9, i8 0, !22, i8 2, i32 2, i8 4, i32 1, i8 0, !10}
-!22 = !{i32 0, i32 1}
-!23 = !{i32 0, i64 1048576}
-!24 = !{!"num_images", i32 0}
-!25 = !{!"num_ssbos", i32 1}
-!26 = !{!"float_controls_execution_mode", i32 0}
+!4 = !{null, null, !5, null}
+!5 = !{!6, !7, !8}
+!6 = !{i32 0, %__ubo0* undef, !"__ubo0", i32 0, i32 0, i32 1, i32 0, null}
+!7 = !{i32 1, %__ubo1* undef, !"__ubo1", i32 0, i32 1, i32 1, i32 64, null}
+!8 = !{i32 2, %__ubo2* undef, !"__ubo2", i32 0, i32 2, i32 1, i32 32, null}
+!9 = !{i32 1, void ()* @main, !10}
+!10 = !{!11}
+!11 = !{i32 0, !12, !12}
+!12 = !{}
+!13 = !{void ()* @main, !"main", !14, !4, !22}
+!14 = !{null, !15, null}
+!15 = !{!16, !18, !20}
+!16 = !{i32 0, !"TEXCOORD", i8 9, i8 0, !17, i8 2, i32 1, i8 4, i32 0, i8 0, !12}
+!17 = !{i32 0}
+!18 = !{i32 1, !"TEXCOORD", i8 9, i8 0, !19, i8 2, i32 1, i8 4, i32 1, i8 0, !12}
+!19 = !{i32 1}
+!20 = !{i32 2, !"TEXCOORD", i8 9, i8 0, !21, i8 2, i32 4, i8 4, i32 2, i8 0, !12}
+!21 = !{i32 2, i32 3, i32 4, i32 5}
+!22 = !{i32 0, i64 1048576}
+!23 = !{!"num_images", i32 0}
+!24 = !{!"num_ssbos", i32 0}
+!25 = !{!"float_controls_execution_mode", i32 0}
 
 
-[D] CrfCntForInput equals CrfCount + HW_REG_START
-[D] CrfCntForInput for VS push mode: 16
 [D] ------------------------Begin Dump SC Shader Info------------------------ [0000]
 [D] SCShaderVersion:                  :97
 [D] SCShaderType:                     :0
@@ -134,7 +179,7 @@ attributes #2 = { nounwind }
 [D]         bConservativeDepth        :0
 [D]         bConservativeDepthMode    :0
 [D]         bForceEarlyDepthStencil   :0
-[D]         bLSBuffer                 :1
+[D]         bLSBuffer                 :0
 [D]         bNeedPatchMovimm          :0
 [D]         bHwCbMode                 :1
 [D]         bMapImageToTSharp         :0
@@ -158,7 +203,7 @@ attributes #2 = { nounwind }
 [D]         bFp64RoundingZero         :0
 [D]         bDX9FConstRelative        :0
 [D] Dump Input Flags:
-[D]         bHasVertexID              :1
+[D]         bHasVertexID              :0
 [D]         bHasRHW                   :0
 [D]         bHasIsFrontFace           :0
 [D]         bHasSampleMask            :0
@@ -185,206 +230,17 @@ attributes #2 = { nounwind }
 [D] 
 
 Dump Input Info:
-[D] EntryCount              :9
-[D] UsedBitMask             :7
-[D] HwVectorCount           :3
-[D] Entry 0------------------------------->
-[D] Semantic=VARYING_DX10	55
-[D] SemanticIndex           :0
-[D] HwRegNo                 :8
-[D] IoIndex                 :0
-[D] ChannelIndex            :0
-[D] Used                    :1
-[D] bInterpolate            :0
-[D] bCentroid               :0
-[D] bPerspective            :0
-[D] bSampleFreq             :0
-[D] bIntVarying             :0
-[D] bUIntVarying            :0
-[D] bIntpAtCentroid         :0
-[D] bIntpAtCenter           :0
-[D] bIntpAtOffsetPxPy       :0
-[D] bIntpAtSample           :0
-[D] b64bits                 :0
-[D] bCanPack                :1
-[D] ExtendedIndex           :0
-[D] Shared                  :0
-[D] Entry 1------------------------------->
-[D] Semantic=VARYING_DX10	55
-[D] SemanticIndex           :0
-[D] HwRegNo                 :9
-[D] IoIndex                 :0
-[D] ChannelIndex            :1
-[D] Used                    :1
-[D] bInterpolate            :0
-[D] bCentroid               :0
-[D] bPerspective            :0
-[D] bSampleFreq             :0
-[D] bIntVarying             :0
-[D] bUIntVarying            :0
-[D] bIntpAtCentroid         :0
-[D] bIntpAtCenter           :0
-[D] bIntpAtOffsetPxPy       :0
-[D] bIntpAtSample           :0
-[D] b64bits                 :0
-[D] bCanPack                :1
-[D] ExtendedIndex           :0
-[D] Shared                  :0
-[D] Entry 2------------------------------->
-[D] Semantic=VARYING_DX10	55
-[D] SemanticIndex           :0
-[D] HwRegNo                 :10
-[D] IoIndex                 :0
-[D] ChannelIndex            :2
-[D] Used                    :1
-[D] bInterpolate            :0
-[D] bCentroid               :0
-[D] bPerspective            :0
-[D] bSampleFreq             :0
-[D] bIntVarying             :0
-[D] bUIntVarying            :0
-[D] bIntpAtCentroid         :0
-[D] bIntpAtCenter           :0
-[D] bIntpAtOffsetPxPy       :0
-[D] bIntpAtSample           :0
-[D] b64bits                 :0
-[D] bCanPack                :1
-[D] ExtendedIndex           :0
-[D] Shared                  :0
-[D] Entry 3------------------------------->
-[D] Semantic=VARYING_DX10	55
-[D] SemanticIndex           :0
-[D] HwRegNo                 :11
-[D] IoIndex                 :0
-[D] ChannelIndex            :3
-[D] Used                    :1
-[D] bInterpolate            :0
-[D] bCentroid               :0
-[D] bPerspective            :0
-[D] bSampleFreq             :0
-[D] bIntVarying             :0
-[D] bUIntVarying            :0
-[D] bIntpAtCentroid         :0
-[D] bIntpAtCenter           :0
-[D] bIntpAtOffsetPxPy       :0
-[D] bIntpAtSample           :0
-[D] b64bits                 :0
-[D] bCanPack                :1
-[D] ExtendedIndex           :0
-[D] Shared                  :0
-[D] Entry 4------------------------------->
-[D] Semantic=VARYING_DX10	55
-[D] SemanticIndex           :1
-[D] HwRegNo                 :12
-[D] IoIndex                 :1
-[D] ChannelIndex            :0
-[D] Used                    :1
-[D] bInterpolate            :0
-[D] bCentroid               :0
-[D] bPerspective            :0
-[D] bSampleFreq             :0
-[D] bIntVarying             :0
-[D] bUIntVarying            :0
-[D] bIntpAtCentroid         :0
-[D] bIntpAtCenter           :0
-[D] bIntpAtOffsetPxPy       :0
-[D] bIntpAtSample           :0
-[D] b64bits                 :0
-[D] bCanPack                :1
-[D] ExtendedIndex           :0
-[D] Shared                  :0
-[D] Entry 5------------------------------->
-[D] Semantic=VARYING_DX10	55
-[D] SemanticIndex           :1
-[D] HwRegNo                 :13
-[D] IoIndex                 :1
-[D] ChannelIndex            :1
-[D] Used                    :1
-[D] bInterpolate            :0
-[D] bCentroid               :0
-[D] bPerspective            :0
-[D] bSampleFreq             :0
-[D] bIntVarying             :0
-[D] bUIntVarying            :0
-[D] bIntpAtCentroid         :0
-[D] bIntpAtCenter           :0
-[D] bIntpAtOffsetPxPy       :0
-[D] bIntpAtSample           :0
-[D] b64bits                 :0
-[D] bCanPack                :1
-[D] ExtendedIndex           :0
-[D] Shared                  :0
-[D] Entry 6------------------------------->
-[D] Semantic=VARYING_DX10	55
-[D] SemanticIndex           :1
-[D] HwRegNo                 :14
-[D] IoIndex                 :1
-[D] ChannelIndex            :2
-[D] Used                    :1
-[D] bInterpolate            :0
-[D] bCentroid               :0
-[D] bPerspective            :0
-[D] bSampleFreq             :0
-[D] bIntVarying             :0
-[D] bUIntVarying            :0
-[D] bIntpAtCentroid         :0
-[D] bIntpAtCenter           :0
-[D] bIntpAtOffsetPxPy       :0
-[D] bIntpAtSample           :0
-[D] b64bits                 :0
-[D] bCanPack                :1
-[D] ExtendedIndex           :0
-[D] Shared                  :0
-[D] Entry 7------------------------------->
-[D] Semantic=VARYING_DX10	55
-[D] SemanticIndex           :1
-[D] HwRegNo                 :15
-[D] IoIndex                 :1
-[D] ChannelIndex            :3
-[D] Used                    :1
-[D] bInterpolate            :0
-[D] bCentroid               :0
-[D] bPerspective            :0
-[D] bSampleFreq             :0
-[D] bIntVarying             :0
-[D] bUIntVarying            :0
-[D] bIntpAtCentroid         :0
-[D] bIntpAtCenter           :0
-[D] bIntpAtOffsetPxPy       :0
-[D] bIntpAtSample           :0
-[D] b64bits                 :0
-[D] bCanPack                :1
-[D] ExtendedIndex           :0
-[D] Shared                  :0
-[D] Entry 8------------------------------->
-[D] Semantic=VERTEX_ID	22
-[D] SemanticIndex           :0
-[D] HwRegNo                 :4
-[D] IoIndex                 :2
-[D] ChannelIndex            :0
-[D] Used                    :1
-[D] bInterpolate            :0
-[D] bCentroid               :0
-[D] bPerspective            :0
-[D] bSampleFreq             :0
-[D] bIntVarying             :0
-[D] bUIntVarying            :0
-[D] bIntpAtCentroid         :0
-[D] bIntpAtCenter           :0
-[D] bIntpAtOffsetPxPy       :0
-[D] bIntpAtSample           :0
-[D] b64bits                 :0
-[D] bCanPack                :1
-[D] ExtendedIndex           :0
-[D] Shared                  :0
+[D] EntryCount              :0
+[D] UsedBitMask             :0
+[D] HwVectorCount           :0
 [D] 
 
 Dump Output Info:
-[D] EntryCount              :12
-[D] UsedBitMask             :7
-[D] HwVectorCount           :3
+[D] EntryCount              :24
+[D] UsedBitMask             :3f
+[D] HwVectorCount           :6
 [D] Entry 0------------------------------->
-[D] Semantic=POSITION	0
+[D] Semantic=VARYING_DX10	55
 [D] SemanticIndex           :0
 [D] HwRegNo                 :0
 [D] IoIndex                 :0
@@ -392,7 +248,7 @@ Dump Output Info:
 [D] Used                    :1
 [D] bInterpolate            :1
 [D] bCentroid               :0
-[D] bPerspective            :0
+[D] bPerspective            :1
 [D] bSampleFreq             :0
 [D] bIntVarying             :0
 [D] bUIntVarying            :0
@@ -405,7 +261,7 @@ Dump Output Info:
 [D] ExtendedIndex           :0
 [D] Shared                  :0
 [D] Entry 1------------------------------->
-[D] Semantic=POSITION	0
+[D] Semantic=VARYING_DX10	55
 [D] SemanticIndex           :0
 [D] HwRegNo                 :0
 [D] IoIndex                 :0
@@ -413,7 +269,7 @@ Dump Output Info:
 [D] Used                    :1
 [D] bInterpolate            :1
 [D] bCentroid               :0
-[D] bPerspective            :0
+[D] bPerspective            :1
 [D] bSampleFreq             :0
 [D] bIntVarying             :0
 [D] bUIntVarying            :0
@@ -426,7 +282,7 @@ Dump Output Info:
 [D] ExtendedIndex           :0
 [D] Shared                  :0
 [D] Entry 2------------------------------->
-[D] Semantic=POSITION	0
+[D] Semantic=VARYING_DX10	55
 [D] SemanticIndex           :0
 [D] HwRegNo                 :0
 [D] IoIndex                 :0
@@ -434,7 +290,7 @@ Dump Output Info:
 [D] Used                    :1
 [D] bInterpolate            :1
 [D] bCentroid               :0
-[D] bPerspective            :0
+[D] bPerspective            :1
 [D] bSampleFreq             :0
 [D] bIntVarying             :0
 [D] bUIntVarying            :0
@@ -447,7 +303,7 @@ Dump Output Info:
 [D] ExtendedIndex           :0
 [D] Shared                  :0
 [D] Entry 3------------------------------->
-[D] Semantic=POSITION	0
+[D] Semantic=VARYING_DX10	55
 [D] SemanticIndex           :0
 [D] HwRegNo                 :0
 [D] IoIndex                 :0
@@ -455,7 +311,7 @@ Dump Output Info:
 [D] Used                    :1
 [D] bInterpolate            :1
 [D] bCentroid               :0
-[D] bPerspective            :0
+[D] bPerspective            :1
 [D] bSampleFreq             :0
 [D] bIntVarying             :0
 [D] bUIntVarying            :0
@@ -469,7 +325,7 @@ Dump Output Info:
 [D] Shared                  :0
 [D] Entry 4------------------------------->
 [D] Semantic=VARYING_DX10	55
-[D] SemanticIndex           :0
+[D] SemanticIndex           :1
 [D] HwRegNo                 :0
 [D] IoIndex                 :1
 [D] ChannelIndex            :0
@@ -485,12 +341,12 @@ Dump Output Info:
 [D] bIntpAtOffsetPxPy       :0
 [D] bIntpAtSample           :0
 [D] b64bits                 :0
-[D] bCanPack                :0
+[D] bCanPack                :1
 [D] ExtendedIndex           :0
 [D] Shared                  :0
 [D] Entry 5------------------------------->
 [D] Semantic=VARYING_DX10	55
-[D] SemanticIndex           :0
+[D] SemanticIndex           :1
 [D] HwRegNo                 :0
 [D] IoIndex                 :1
 [D] ChannelIndex            :1
@@ -506,12 +362,12 @@ Dump Output Info:
 [D] bIntpAtOffsetPxPy       :0
 [D] bIntpAtSample           :0
 [D] b64bits                 :0
-[D] bCanPack                :0
+[D] bCanPack                :1
 [D] ExtendedIndex           :0
 [D] Shared                  :0
 [D] Entry 6------------------------------->
 [D] Semantic=VARYING_DX10	55
-[D] SemanticIndex           :0
+[D] SemanticIndex           :1
 [D] HwRegNo                 :0
 [D] IoIndex                 :1
 [D] ChannelIndex            :2
@@ -527,12 +383,12 @@ Dump Output Info:
 [D] bIntpAtOffsetPxPy       :0
 [D] bIntpAtSample           :0
 [D] b64bits                 :0
-[D] bCanPack                :0
+[D] bCanPack                :1
 [D] ExtendedIndex           :0
 [D] Shared                  :0
 [D] Entry 7------------------------------->
 [D] Semantic=VARYING_DX10	55
-[D] SemanticIndex           :0
+[D] SemanticIndex           :1
 [D] HwRegNo                 :0
 [D] IoIndex                 :1
 [D] ChannelIndex            :3
@@ -548,12 +404,12 @@ Dump Output Info:
 [D] bIntpAtOffsetPxPy       :0
 [D] bIntpAtSample           :0
 [D] b64bits                 :0
-[D] bCanPack                :0
+[D] bCanPack                :1
 [D] ExtendedIndex           :0
 [D] Shared                  :0
 [D] Entry 8------------------------------->
 [D] Semantic=VARYING_DX10	55
-[D] SemanticIndex           :1
+[D] SemanticIndex           :2
 [D] HwRegNo                 :0
 [D] IoIndex                 :2
 [D] ChannelIndex            :0
@@ -574,7 +430,7 @@ Dump Output Info:
 [D] Shared                  :0
 [D] Entry 9------------------------------->
 [D] Semantic=VARYING_DX10	55
-[D] SemanticIndex           :1
+[D] SemanticIndex           :2
 [D] HwRegNo                 :0
 [D] IoIndex                 :2
 [D] ChannelIndex            :1
@@ -595,7 +451,7 @@ Dump Output Info:
 [D] Shared                  :0
 [D] Entry 10------------------------------->
 [D] Semantic=VARYING_DX10	55
-[D] SemanticIndex           :1
+[D] SemanticIndex           :2
 [D] HwRegNo                 :0
 [D] IoIndex                 :2
 [D] ChannelIndex            :2
@@ -616,9 +472,261 @@ Dump Output Info:
 [D] Shared                  :0
 [D] Entry 11------------------------------->
 [D] Semantic=VARYING_DX10	55
-[D] SemanticIndex           :1
+[D] SemanticIndex           :2
 [D] HwRegNo                 :0
 [D] IoIndex                 :2
+[D] ChannelIndex            :3
+[D] Used                    :1
+[D] bInterpolate            :1
+[D] bCentroid               :0
+[D] bPerspective            :1
+[D] bSampleFreq             :0
+[D] bIntVarying             :0
+[D] bUIntVarying            :0
+[D] bIntpAtCentroid         :0
+[D] bIntpAtCenter           :0
+[D] bIntpAtOffsetPxPy       :0
+[D] bIntpAtSample           :0
+[D] b64bits                 :0
+[D] bCanPack                :0
+[D] ExtendedIndex           :0
+[D] Shared                  :0
+[D] Entry 12------------------------------->
+[D] Semantic=VARYING_DX10	55
+[D] SemanticIndex           :3
+[D] HwRegNo                 :0
+[D] IoIndex                 :3
+[D] ChannelIndex            :0
+[D] Used                    :1
+[D] bInterpolate            :1
+[D] bCentroid               :0
+[D] bPerspective            :1
+[D] bSampleFreq             :0
+[D] bIntVarying             :0
+[D] bUIntVarying            :0
+[D] bIntpAtCentroid         :0
+[D] bIntpAtCenter           :0
+[D] bIntpAtOffsetPxPy       :0
+[D] bIntpAtSample           :0
+[D] b64bits                 :0
+[D] bCanPack                :0
+[D] ExtendedIndex           :0
+[D] Shared                  :0
+[D] Entry 13------------------------------->
+[D] Semantic=VARYING_DX10	55
+[D] SemanticIndex           :3
+[D] HwRegNo                 :0
+[D] IoIndex                 :3
+[D] ChannelIndex            :1
+[D] Used                    :1
+[D] bInterpolate            :1
+[D] bCentroid               :0
+[D] bPerspective            :1
+[D] bSampleFreq             :0
+[D] bIntVarying             :0
+[D] bUIntVarying            :0
+[D] bIntpAtCentroid         :0
+[D] bIntpAtCenter           :0
+[D] bIntpAtOffsetPxPy       :0
+[D] bIntpAtSample           :0
+[D] b64bits                 :0
+[D] bCanPack                :0
+[D] ExtendedIndex           :0
+[D] Shared                  :0
+[D] Entry 14------------------------------->
+[D] Semantic=VARYING_DX10	55
+[D] SemanticIndex           :3
+[D] HwRegNo                 :0
+[D] IoIndex                 :3
+[D] ChannelIndex            :2
+[D] Used                    :1
+[D] bInterpolate            :1
+[D] bCentroid               :0
+[D] bPerspective            :1
+[D] bSampleFreq             :0
+[D] bIntVarying             :0
+[D] bUIntVarying            :0
+[D] bIntpAtCentroid         :0
+[D] bIntpAtCenter           :0
+[D] bIntpAtOffsetPxPy       :0
+[D] bIntpAtSample           :0
+[D] b64bits                 :0
+[D] bCanPack                :0
+[D] ExtendedIndex           :0
+[D] Shared                  :0
+[D] Entry 15------------------------------->
+[D] Semantic=VARYING_DX10	55
+[D] SemanticIndex           :3
+[D] HwRegNo                 :0
+[D] IoIndex                 :3
+[D] ChannelIndex            :3
+[D] Used                    :1
+[D] bInterpolate            :1
+[D] bCentroid               :0
+[D] bPerspective            :1
+[D] bSampleFreq             :0
+[D] bIntVarying             :0
+[D] bUIntVarying            :0
+[D] bIntpAtCentroid         :0
+[D] bIntpAtCenter           :0
+[D] bIntpAtOffsetPxPy       :0
+[D] bIntpAtSample           :0
+[D] b64bits                 :0
+[D] bCanPack                :0
+[D] ExtendedIndex           :0
+[D] Shared                  :0
+[D] Entry 16------------------------------->
+[D] Semantic=VARYING_DX10	55
+[D] SemanticIndex           :4
+[D] HwRegNo                 :0
+[D] IoIndex                 :4
+[D] ChannelIndex            :0
+[D] Used                    :1
+[D] bInterpolate            :1
+[D] bCentroid               :0
+[D] bPerspective            :1
+[D] bSampleFreq             :0
+[D] bIntVarying             :0
+[D] bUIntVarying            :0
+[D] bIntpAtCentroid         :0
+[D] bIntpAtCenter           :0
+[D] bIntpAtOffsetPxPy       :0
+[D] bIntpAtSample           :0
+[D] b64bits                 :0
+[D] bCanPack                :0
+[D] ExtendedIndex           :0
+[D] Shared                  :0
+[D] Entry 17------------------------------->
+[D] Semantic=VARYING_DX10	55
+[D] SemanticIndex           :4
+[D] HwRegNo                 :0
+[D] IoIndex                 :4
+[D] ChannelIndex            :1
+[D] Used                    :1
+[D] bInterpolate            :1
+[D] bCentroid               :0
+[D] bPerspective            :1
+[D] bSampleFreq             :0
+[D] bIntVarying             :0
+[D] bUIntVarying            :0
+[D] bIntpAtCentroid         :0
+[D] bIntpAtCenter           :0
+[D] bIntpAtOffsetPxPy       :0
+[D] bIntpAtSample           :0
+[D] b64bits                 :0
+[D] bCanPack                :0
+[D] ExtendedIndex           :0
+[D] Shared                  :0
+[D] Entry 18------------------------------->
+[D] Semantic=VARYING_DX10	55
+[D] SemanticIndex           :4
+[D] HwRegNo                 :0
+[D] IoIndex                 :4
+[D] ChannelIndex            :2
+[D] Used                    :1
+[D] bInterpolate            :1
+[D] bCentroid               :0
+[D] bPerspective            :1
+[D] bSampleFreq             :0
+[D] bIntVarying             :0
+[D] bUIntVarying            :0
+[D] bIntpAtCentroid         :0
+[D] bIntpAtCenter           :0
+[D] bIntpAtOffsetPxPy       :0
+[D] bIntpAtSample           :0
+[D] b64bits                 :0
+[D] bCanPack                :0
+[D] ExtendedIndex           :0
+[D] Shared                  :0
+[D] Entry 19------------------------------->
+[D] Semantic=VARYING_DX10	55
+[D] SemanticIndex           :4
+[D] HwRegNo                 :0
+[D] IoIndex                 :4
+[D] ChannelIndex            :3
+[D] Used                    :1
+[D] bInterpolate            :1
+[D] bCentroid               :0
+[D] bPerspective            :1
+[D] bSampleFreq             :0
+[D] bIntVarying             :0
+[D] bUIntVarying            :0
+[D] bIntpAtCentroid         :0
+[D] bIntpAtCenter           :0
+[D] bIntpAtOffsetPxPy       :0
+[D] bIntpAtSample           :0
+[D] b64bits                 :0
+[D] bCanPack                :0
+[D] ExtendedIndex           :0
+[D] Shared                  :0
+[D] Entry 20------------------------------->
+[D] Semantic=VARYING_DX10	55
+[D] SemanticIndex           :5
+[D] HwRegNo                 :0
+[D] IoIndex                 :5
+[D] ChannelIndex            :0
+[D] Used                    :1
+[D] bInterpolate            :1
+[D] bCentroid               :0
+[D] bPerspective            :1
+[D] bSampleFreq             :0
+[D] bIntVarying             :0
+[D] bUIntVarying            :0
+[D] bIntpAtCentroid         :0
+[D] bIntpAtCenter           :0
+[D] bIntpAtOffsetPxPy       :0
+[D] bIntpAtSample           :0
+[D] b64bits                 :0
+[D] bCanPack                :0
+[D] ExtendedIndex           :0
+[D] Shared                  :0
+[D] Entry 21------------------------------->
+[D] Semantic=VARYING_DX10	55
+[D] SemanticIndex           :5
+[D] HwRegNo                 :0
+[D] IoIndex                 :5
+[D] ChannelIndex            :1
+[D] Used                    :1
+[D] bInterpolate            :1
+[D] bCentroid               :0
+[D] bPerspective            :1
+[D] bSampleFreq             :0
+[D] bIntVarying             :0
+[D] bUIntVarying            :0
+[D] bIntpAtCentroid         :0
+[D] bIntpAtCenter           :0
+[D] bIntpAtOffsetPxPy       :0
+[D] bIntpAtSample           :0
+[D] b64bits                 :0
+[D] bCanPack                :0
+[D] ExtendedIndex           :0
+[D] Shared                  :0
+[D] Entry 22------------------------------->
+[D] Semantic=VARYING_DX10	55
+[D] SemanticIndex           :5
+[D] HwRegNo                 :0
+[D] IoIndex                 :5
+[D] ChannelIndex            :2
+[D] Used                    :1
+[D] bInterpolate            :1
+[D] bCentroid               :0
+[D] bPerspective            :1
+[D] bSampleFreq             :0
+[D] bIntVarying             :0
+[D] bUIntVarying            :0
+[D] bIntpAtCentroid         :0
+[D] bIntpAtCenter           :0
+[D] bIntpAtOffsetPxPy       :0
+[D] bIntpAtSample           :0
+[D] b64bits                 :0
+[D] bCanPack                :0
+[D] ExtendedIndex           :0
+[D] Shared                  :0
+[D] Entry 23------------------------------->
+[D] Semantic=VARYING_DX10	55
+[D] SemanticIndex           :5
+[D] HwRegNo                 :0
+[D] IoIndex                 :5
 [D] ChannelIndex            :3
 [D] Used                    :1
 [D] bInterpolate            :1
@@ -642,25 +750,58 @@ Dump Patch Constant Info:
 [D] UsedBitMask             :0
 [D] HwVectorCount           :0
 [D] Dump Cbv  Info:
-[D] ResRangeCount              :0
-[D] Dump Srv  Info:
-[D] ResRangeCount              :0
-[D] Dump Sampler  Info:
-[D] ResRangeCount              :0
-[D] Dump Uav  Info:
-[D]         ResRangeCount              :1
+[D] ResRangeCount              :3
 [D]         ResRangeID                 :0
+[D]         ResIndex                   :0
 [D]         ResCount                   :1
-[D]         HwRegNo                    :0
-[D]         ResKind                    :11
-[D]         ComponentType              :9
+[D]         HwRegNo                    :24
+[D]         ResKind                    :0
+[D]         ComponentType              :0
 [D]         HeapIndex                  :0
+[D]         SpaceID                    :0
 [D]         SpaceID                    :0
 [D]         Reduction                  :0
 [D]         GlobalCoherent             :0
 [D]         Rov                        :0
 [D]         MappedToTSharp             :0
-[D]         ReadOnly                   :1
+[D]         BufSize                    :0
+[D]         StartInCb                  :0
+[D]         ResRangeID                 :1
+[D]         ResIndex                   :1
+[D]         ResCount                   :1
+[D]         HwRegNo                    :8
+[D]         ResKind                    :0
+[D]         ComponentType              :0
+[D]         HeapIndex                  :0
+[D]         SpaceID                    :0
+[D]         SpaceID                    :0
+[D]         Reduction                  :0
+[D]         GlobalCoherent             :0
+[D]         Rov                        :0
+[D]         MappedToTSharp             :0
+[D]         BufSize                    :64
+[D]         StartInCb                  :0
+[D]         ResRangeID                 :2
+[D]         ResIndex                   :2
+[D]         ResCount                   :1
+[D]         HwRegNo                    :0
+[D]         ResKind                    :0
+[D]         ComponentType              :0
+[D]         HeapIndex                  :0
+[D]         SpaceID                    :0
+[D]         SpaceID                    :0
+[D]         Reduction                  :0
+[D]         GlobalCoherent             :0
+[D]         Rov                        :0
+[D]         MappedToTSharp             :0
+[D]         BufSize                    :32
+[D]         StartInCb                  :0
+[D] Dump Srv  Info:
+[D] ResRangeCount              :0
+[D] Dump Sampler  Info:
+[D] ResRangeCount              :0
+[D] Dump Uav  Info:
+[D]         ResRangeCount              :0
 [D] Dump Resource Query  Info:
 [D]         TexSizeQueryCnt            :0
 [D]         ImgSizeQueryCnt            :0
@@ -717,8 +858,8 @@ Dump Patch Constant Info:
 [D]         SimdMode                  :0
 [D]         EuBlendCrf                :0
 [D]         OglImageNum               :0
-[D]         OglStorageBufferNum       :1
-[D]         OutPosEntryIdx            :3
+[D]         OglStorageBufferNum       :0
+[D]         OutPosEntryIdx            :0
 [D]         OutPointSizeEntryIdx      :0
 [D]         OutRTArrayIdxEntryIdx     :0
 [D]         OutFakeDistSignEntryIdx   :0
@@ -729,18 +870,18 @@ Dump Patch Constant Info:
 [D]         PMSize                    :0
 [D]         DxBufCounterMask          :0
 [D]         DxBufCounterResID         :0
-[D]         VsNormalAttrCrfStart      :8
+[D]         VsNormalAttrCrfStart      :4
 [D]         ConstInfoFlag             :0
-[D] VS CrfCount        : 20 ShareMemSize= 0
-[D] VS InstrCount        : 6
-[D] VS  UavLdInstCnt        : 1 UavStInstCnt:, 0, / 6
+[D] VS CrfCount        : 8 ShareMemSize= 0
+[D] VS InstrCount        : 7
 [D] begin to dump shader code:
 [D] --------------------------------------------------------------------------
 [D]    PC                         Instruction                                  Content                                                                                             
-  0x0000         0x600000000000000c 0x3000000004000002           EMITF                     vso[2].xyzw    ,r12            
-  0x0001         0x6000000000000008 0x3000000004000001           EMITF                     vso[1].xyzw    ,r8             
-  0x0002         0x0a40000400000004 0x0000000000000000           IADDI.s                   r0             ,0              ,r4 << 4        
-  0x0003         0x8600000000000000 0x30000000000d0000           LD.llc                    r0.xyzw        ,[r0.x]         ,void           ,u[0]           
-  0x0004         0x6000000000000000 0x300000000c000000           EMITF.ve                  vso[0].xyzw    ,r0             
-  0x0005         0xc300000000000000 0x0000000000000000           JUMP                      0              
+  0x0000         0x6000000000001008 0x3000000004000002           EMITF                     vso[2].xyzw    ,cb8            
+  0x0001         0x600000000000100c 0x3000000004000003           EMITF                     vso[3].xyzw    ,cb12           
+  0x0002         0x6000000000001010 0x3000000004000004           EMITF                     vso[4].xyzw    ,cb16           
+  0x0003         0x6000000000001014 0x3000000004000005           EMITF                     vso[5].xyzw    ,cb20           
+  0x0004         0x6000000000001000 0x3000000004000000           EMITF                     vso[0].xyzw    ,cb0            
+  0x0005         0x6000000000001004 0x300000000c000001           EMITF.ve                  vso[1].xyzw    ,cb4            
+  0x0006         0xc300000000000000 0x0000000000000000           JUMP                      0              
 [D] --------------------------------------------------------------------------
