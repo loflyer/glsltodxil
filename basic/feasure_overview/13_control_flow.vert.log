@@ -24,15 +24,15 @@ declare void @dx.op.storeOutput.f32(i32, i32, i32, i8, float) #1
 
 define void @main() {
   %1 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 2, i32 0, i32 0, i1 false)
-  br label %2
+  br label %2  ;  转到 基本块2 
 
-2:                                                ; preds = %0
+2:                                                ; preds = %0                        加载元素的索引 0
   %3 = call %dx.types.CBufRet.i32 @dx.extop.cbufferLoadLegacy.i32(i32 275, %dx.types.Handle %1, i32 0)
   %4 = extractvalue %dx.types.CBufRet.i32 %3, 0
-  %5 = extractvalue %dx.types.CBufRet.i32 %3, 1
-  %6 = extractvalue %dx.types.CBufRet.i32 %3, 2
-  %7 = extractvalue %dx.types.CBufRet.i32 %3, 3
-  %8 = icmp eq i32 0, %4
+  %5 = extractvalue %dx.types.CBufRet.i32 %3, 1  ; 后面没用到
+  %6 = extractvalue %dx.types.CBufRet.i32 %3, 2  ; 后面没用到
+  %7 = extractvalue %dx.types.CBufRet.i32 %3, 3  ; 后面没用到
+  %8 = icmp eq i32 0, %4 ;  %8 = true
   br i1 %8, label %9, label %39
 
 9:                                                ; preds = %2
@@ -41,6 +41,7 @@ define void @main() {
   %12 = extractvalue %dx.types.CBufRet.i32 %10, 1
   %13 = extractvalue %dx.types.CBufRet.i32 %10, 2
   %14 = extractvalue %dx.types.CBufRet.i32 %10, 3
+  
   %15 = bitcast i32 %11 to float
   %16 = bitcast i32 1056964608 to float
   %17 = fmul fast float %15, %16
