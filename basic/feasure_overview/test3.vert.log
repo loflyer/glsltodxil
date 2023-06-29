@@ -25,7 +25,7 @@ subroutine uniform routine_type routine[9];
 
 void main(void)
 {
-    out_dynamic = routine[1](vec4(1.0f,1.0f,1.0f,1.0f),vec4(2.0f,2.0f,2.0f,2.0f));
+    out_dynamic = routine[1](vec4(1.0f,1.0f,1.0f,1.0f), vec4(2.0f,2.0f,2.0f,2.0f)); // 
 }
 ################################################################GLSL######################################################
 
@@ -46,28 +46,32 @@ declare void @dx.op.storeOutput.f32(i32, i32, i32, i8, float) #1
 define void @main() {
   %1 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 2, i32 0, i32 0, i1 false)
   %2 = call %dx.types.CBufRet.i32 @dx.extop.cbufferLoadLegacy.i32(i32 275, %dx.types.Handle %1, i32 1) ; 偏移1  所以第3个参数就是routine_type routine[9]数组下标
+  
   %3 = extractvalue %dx.types.CBufRet.i32 %2, 0
   %4 = extractvalue %dx.types.CBufRet.i32 %2, 1
   %5 = extractvalue %dx.types.CBufRet.i32 %2, 2
   %6 = extractvalue %dx.types.CBufRet.i32 %2, 3
+
   %7 = icmp eq i32 %3, 0
   %8 = select i1 %7, i32 1077936128, i32 1073741824
   %9 = select i1 %7, i32 1077936128, i32 1073741824
   %10 = select i1 %7, i32 1077936128, i32 1073741824
   %11 = select i1 %7, i32 1077936128, i32 1073741824
-  %12 = bitcast i32 %8 to float
+  %12 = bitcast i32 %8 to float ; 
+
   call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 0, float %12)
-  %13 = bitcast i32 %9 to float
+  %13 = bitcast i32 %9 to float ;
   call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 1, float %13)
   %14 = bitcast i32 %10 to float
   call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 2, float %14)
   %15 = bitcast i32 %11 to float
   call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 3, float %15)
+
   ret void
 }
 
-attributes #0 = { nounwind readonly }
-attributes #1 = { nounwind }
+attributes #0 = {nounwind readonly}
+attributes #1 = {nounwind}
 
 !llvm.ident = !{!0}
 !dx.version = !{!1}
@@ -99,4 +103,4 @@ attributes #1 = { nounwind }
 !17 = !{!"num_images", i32 0}
 !18 = !{!"num_ssbos", i32 0}
 !19 = !{!"float_controls_execution_mode", i32 0}
-################################################################LLVM######################################################
+###############################################LLVM######################################################
