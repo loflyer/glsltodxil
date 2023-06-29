@@ -1,0 +1,166 @@
+##############################################################glsl代码###############################################
+#version 450 core
+#extension GL_ARB_shader_subroutine : require
+
+uniform UBO0 {
+  vec4 a;
+  float b;
+}ubo0;
+
+out vec4 out_dynamic1;
+out vec4 out_dynamic2;
+
+// Subroutine type
+subroutine vec4 routine_type(in vec4 left, in vec4 right);
+
+// Subroutine definitions
+subroutine(routine_type) vec4 add(in vec4 left, in vec4 right)
+{
+    return left + right;
+}
+
+subroutine(routine_type) vec4 multiply(in vec4 left, in vec4 right)
+{
+    return left * right;
+}
+
+// Sub routine uniform
+subroutine uniform routine_type routine[4];
+
+
+void main(void)
+{
+    out_dynamic1 = routine[ubo0.a.x](vec4(1.0f,1.0f,1.0f,1.0f),vec4(2.0f,2.0f,2.0f,2.0f) );
+    out_dynamic1.x = ubo0.b;
+
+    out_dynamic2 = routine[ubo0.a.y](vec4(1.0f,1.0f,1.0f,1.0f),vec4(2.0f,2.0f,2.0f,2.0f));
+    out_dynamic2.y = ubo0.b;
+
+}
+##############################################################glsl代码###############################################
+
+####################################################DXIL代码###########################################################
+[D] begin to dump hw reg setting in compile arguments:
+[D] UsharpBase:   0
+[D] MaxUsharpReg: 0
+[D] MaxTsharpReg: 0
+[D] MaxSsharpReg: 0
+[D] MaxCsharpReg: 0
+[D] MaxCbReg:     0
+[D] ------------------------Begin Dump SC LLVM Module Info------------------------ [0000]
+[D] target datalayout = "e-m:e-p:32:32-i1:32-i8:32-i16:32-i32:32-i64:64-f16:32-f32:32-f64:64-n8:16:32:64"
+target triple = "dxil-ms-dx"
+
+%dx.types.Handle = type { i8* }
+%dx.types.CBufRet.i32 = type { i32, i32, i32, i32 }
+%__ubo0 = type { [4 x float] }
+%__ubo1 = type { [8 x float] }
+
+; Function Attrs: nounwind readonly
+declare %dx.types.Handle @dx.op.createHandle(i32, i8, i32, i32, i1) #0
+
+; Function Attrs: nounwind readonly
+declare %dx.types.CBufRet.i32 @dx.op.cbufferLoadLegacy.i32(i32, %dx.types.Handle, i32) #0
+
+; Function Attrs: nounwind readonly
+declare %dx.types.CBufRet.i32 @dx.extop.cbufferLoadLegacy.i32(i32, %dx.types.Handle, i32) #0
+
+; Function Attrs: nounwind
+declare void @dx.op.storeOutput.f32(i32, i32, i32, i8, float) #1
+
+define void @main() {
+  %1 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 2, i32 0, i32 0, i1 false)
+  %2 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 2, i32 1, i32 1, i1 false)
+  %3 = call %dx.types.CBufRet.i32 @dx.op.cbufferLoadLegacy.i32(i32 59, %dx.types.Handle %2, i32 0)
+  %4 = extractvalue %dx.types.CBufRet.i32 %3, 0  ; 还是取 vec4 a 的第1个分量
+  %5 = extractvalue %dx.types.CBufRet.i32 %3, 1  ; 取vec4 b的第2个分量
+  %6 = extractvalue %dx.types.CBufRet.i32 %3, 2
+  %7 = extractvalue %dx.types.CBufRet.i32 %3, 3
+
+
+  %8 = and i32 %4, 1073741823 ; 还是 高两位置0 剩下低30位不变
+  %9 = call %dx.types.CBufRet.i32 @dx.extop.cbufferLoadLegacy.i32(i32 275, %dx.types.Handle %1, i32 %8) ; 偏移 %8(%4 ubo0.a.x)
+  %10 = extractvalue %dx.types.CBufRet.i32 %9, 0
+  %11 = extractvalue %dx.types.CBufRet.i32 %9, 1
+  %12 = extractvalue %dx.types.CBufRet.i32 %9, 2
+  %13 = extractvalue %dx.types.CBufRet.i32 %9, 3
+  %14 = icmp eq i32 %10, 0
+
+  ;                     
+  %15 = select i1 %14, i32 1077936128, i32 1073741824
+  %16 = select i1 %14, i32 1077936128, i32 1073741824
+  %17 = select i1 %14, i32 1077936128, i32 1073741824
+
+  %18 = call %dx.types.CBufRet.i32 @dx.op.cbufferLoadLegacy.i32(i32 59, %dx.types.Handle %2, i32 1) ; 取到了float b;
+  %19 = extractvalue %dx.types.CBufRet.i32 %18, 0 ; b的值
+  %20 = extractvalue %dx.types.CBufRet.i32 %18, 1
+  %21 = extractvalue %dx.types.CBufRet.i32 %18, 2
+  %22 = extractvalue %dx.types.CBufRet.i32 %18, 3
+
+  %23 = and i32 %5, 1073741823 ; 
+  %24 = call %dx.types.CBufRet.i32 @dx.extop.cbufferLoadLegacy.i32(i32 275, %dx.types.Handle %1, i32 %23) ; 偏移 %23(%4 ubo0.a.y)
+  %25 = extractvalue %dx.types.CBufRet.i32 %24, 0
+  %26 = extractvalue %dx.types.CBufRet.i32 %24, 1
+  %27 = extractvalue %dx.types.CBufRet.i32 %24, 2
+  %28 = extractvalue %dx.types.CBufRet.i32 %24, 3
+  %29 = icmp eq i32 %25, 0
+  %30 = select i1 %29, i32 1077936128, i32 1073741824
+  %31 = select i1 %29, i32 1077936128, i32 1073741824
+  %32 = select i1 %29, i32 1077936128, i32 1073741824
+  %33 = bitcast i32 %19 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 0, float %33)
+  %34 = bitcast i32 %15 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 1, float %34)
+  %35 = bitcast i32 %16 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 2, float %35)
+  %36 = bitcast i32 %17 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 3, float %36)
+  %37 = bitcast i32 %30 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 0, float %37)
+  %38 = bitcast i32 %19 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 1, float %38)
+  %39 = bitcast i32 %31 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 2, float %39)
+  %40 = bitcast i32 %32 to float
+  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 3, float %40)
+  ret void
+}
+
+attributes #0 = { nounwind readonly }
+attributes #1 = { nounwind }
+
+!llvm.ident = !{!0}
+!dx.version = !{!1}
+!dx.valver = !{!2}
+!dx.shaderModel = !{!3}
+!dx.resources = !{!4}
+!dx.typeAnnotations = !{!8}
+!dx.entryPoints = !{!12}
+!dx.source.contents = !{!20, !21, !22}
+!dx.vk.xfb = !{}
+
+!0 = !{!"Mesa version 22.04@release"}
+!1 = !{i32 1, i32 1}
+!2 = !{i32 1, i32 4}
+!3 = !{!"vs", i32 6, i32 1}
+!4 = !{null, null, !5, null}
+!5 = !{!6, !7}
+!6 = !{i32 0, %__ubo0* undef, !"__ubo0", i32 0, i32 0, i32 1, i32 16, null}
+!7 = !{i32 1, %__ubo1* undef, !"__ubo1", i32 0, i32 1, i32 1, i32 32, null}
+!8 = !{i32 1, void ()* @main, !9}
+!9 = !{!10}
+!10 = !{i32 0, !11, !11}
+!11 = !{}
+!12 = !{void ()* @main, !"main", !13, !4, !19}
+!13 = !{null, !14, null}
+!14 = !{!15, !17}
+!15 = !{i32 0, !"TEXCOORD", i8 9, i8 0, !16, i8 2, i32 1, i8 4, i32 0, i8 0, !11}
+!16 = !{i32 0}
+!17 = !{i32 1, !"TEXCOORD", i8 9, i8 0, !18, i8 2, i32 1, i8 4, i32 1, i8 0, !11}
+!18 = !{i32 1}
+!19 = !{i32 0, i64 1048576}
+!20 = !{!"num_images", i32 0}
+!21 = !{!"num_ssbos", i32 0}
+!22 = !{!"float_controls_execution_mode", i32 0}
+
+####################################################DXIL代码###########################################################
