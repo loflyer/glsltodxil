@@ -61,12 +61,12 @@ define void @main() {
 
   ; 拿到__ubo1的第一个成员 vec4 a
   %3 = call %dx.types.CBufRet.i32 @dx.op.cbufferLoadLegacy.i32(i32 59, %dx.types.Handle %2, i32 0)
-  %4 = extractvalue %dx.types.CBufRet.i32 %3, 0 ; a的第一个分量 
+  %4 = extractvalue %dx.types.CBufRet.i32 %3, 0 ; a的第一个分量  ubo0.a.x  0,1,2,3
   %5 = extractvalue %dx.types.CBufRet.i32 %3, 1
   %6 = extractvalue %dx.types.CBufRet.i32 %3, 2
   %7 = extractvalue %dx.types.CBufRet.i32 %3, 3
 
-  ; 1073741823<=>0011 1111 1111 1111 1111 1111 1111 1111
+  ; 1073741823<=>  0011 1111 1111 1111 1111 1111 1111 1111
 
   %8 = and i32 %4, 1073741823  ; 看 %4的值是多少了  %4的低30为不变化, 如果%4本来就是一个小的数,%8就等于%4
   %9 = call %dx.types.CBufRet.i32 @dx.extop.cbufferLoadLegacy.i32(i32 275, %dx.types.Handle %1, i32 %8); ;偏移 %8
