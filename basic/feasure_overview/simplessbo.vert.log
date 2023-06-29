@@ -24,10 +24,10 @@ define void @main() {
 
   %3 = shl i32 %2, 4 ; 乘以16  
   
-  ;                                                                                 索引    偏移
+  ;                                                                                 索引    索引
   %4 = call %dx.types.ResRet.i32 @dx.op.bufferLoad.i32(i32 68, %dx.types.Handle %1, i32 %3, i32 undef)
   
-  ; 取 ssbo中的数据
+  ; 取 ssbo中的数据 中一个vec4
   %5 = extractvalue %dx.types.ResRet.i32 %4, 0
   %6 = extractvalue %dx.types.ResRet.i32 %4, 1
   %7 = extractvalue %dx.types.ResRet.i32 %4, 2
