@@ -39,6 +39,7 @@ define void @main() {
   %7 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 0, i32 1, i32 2, i1 false)
   %8 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 0, i32 1, i32 3, i1 false)
   %9 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 0, i32 2, i32 4, i1 false)
+  
   %10 = bitcast i32 1073741824 to float
   %11 = call %dx.types.ResRet.f32 @dx.op.sample.f32(i32 60, %dx.types.Handle %9, %dx.types.Handle %5, float %10, float undef, float undef, float undef, i32 undef, i32 undef, i32 undef, float undef)
   %12 = extractvalue %dx.types.ResRet.f32 %11, 0
