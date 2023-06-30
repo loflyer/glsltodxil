@@ -25,10 +25,13 @@ declare %dx.types.CBufRet.i32 @dx.op.cbufferLoadLegacy.i32(i32, %dx.types.Handle
 declare void @dx.op.storeOutput.f32(i32, i32, i32, i8, float) #1
 
 define void @main() {
+  
+  ; 3个ubo 
   %1 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 2, i32 0, i32 0, i1 false)
   %2 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 2, i32 1, i32 1, i1 false)
   %3 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 2, i32 2, i32 2, i1 false)
 
+  ;   34行到57行取%2这个ubo1中所有component                                                   row-index
   %4 = call %dx.types.CBufRet.i32 @dx.op.cbufferLoadLegacy.i32(i32 59, %dx.types.Handle %2, i32 0)
   %5 = extractvalue %dx.types.CBufRet.i32 %4, 0
   %6 = extractvalue %dx.types.CBufRet.i32 %4, 1
@@ -52,7 +55,8 @@ define void @main() {
   %21 = extractvalue %dx.types.CBufRet.i32 %19, 1
   %22 = extractvalue %dx.types.CBufRet.i32 %19, 2
   %23 = extractvalue %dx.types.CBufRet.i32 %19, 3
-
+  
+  ; 这边是ubo2  4个 vec2
   %24 = call %dx.types.CBufRet.i32 @dx.op.cbufferLoadLegacy.i32(i32 59, %dx.types.Handle %3, i32 0)
   %25 = extractvalue %dx.types.CBufRet.i32 %24, 0
   %26 = extractvalue %dx.types.CBufRet.i32 %24, 1
