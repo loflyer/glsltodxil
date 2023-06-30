@@ -11,7 +11,7 @@ target triple = "dxil-ms-dx"
 
 %dx.types.Handle = type { i8* }
 %dx.types.ResRet.i32 = type { i32, i32, i32, i32, i32 }
-%struct.RWByteAddressBuffer = type { i32 }
+%struct.RWByteAddressBuffer = type { i32 } 
 
 ; Function Attrs: nounwind readonly
 declare %dx.types.Handle @dx.op.createHandle(i32, i8, i32, i32, i1) #0
@@ -32,6 +32,15 @@ define void @main() {
   
   # 资源类别 1 资源ID 0  ssbo
   %1 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 1, i32 0, i32 0, i1 false)
+<<<<<<< HEAD
+  # 操作码 4  ID 2  对应内置变量 gl_VertexID
+  %2 = call i32 @dx.op.loadInput.i32(i32 4, i32 2, i32 0, i8 0, i32 undef) ; 返回顶点索引
+
+  %3 = shl i32 %2, 4 ; 乘以 16  顶点索引乘以16                                     缓冲区的索引  偏移量
+  %4 = call %dx.types.ResRet.i32 @dx.op.bufferLoad.i32(i32 68, %dx.types.Handle %1, i32 %3, i32 undef)
+
+  %5 = extractvalue %dx.types.ResRet.i32 %4, 0
+=======
   # 操作码 4  ID 2 SV_Position
   %2 = call i32 @dx.op.loadInput.i32(i32 4, i32 2, i32 0, i8 0, i32 undef)
 
@@ -40,6 +49,7 @@ define void @main() {
 
 
   %5 = extractvalue %dx.types.ResRet.i32 %4, 0  
+>>>>>>> f70fa84a50592975988399c4627d02d0313e10ff
   %6 = extractvalue %dx.types.ResRet.i32 %4, 1
   %7 = extractvalue %dx.types.ResRet.i32 %4, 2
   %8 = extractvalue %dx.types.ResRet.i32 %4, 3
@@ -49,12 +59,19 @@ define void @main() {
   %11 = call float @dx.op.loadInput.f32(i32 4, i32 0, i32 0, i8 2, i32 undef)
   %12 = call float @dx.op.loadInput.f32(i32 4, i32 0, i32 0, i8 3, i32 undef)
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> f70fa84a50592975988399c4627d02d0313e10ff
   call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 0, float %9)
   call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 1, float %10)
   call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 2, float %11)
   call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 3, float %12)
+<<<<<<< HEAD
+  
+=======
 
+>>>>>>> f70fa84a50592975988399c4627d02d0313e10ff
   %13 = call float @dx.op.loadInput.f32(i32 4, i32 1, i32 0, i8 0, i32 undef)
   %14 = call float @dx.op.loadInput.f32(i32 4, i32 1, i32 0, i8 1, i32 undef)
   %15 = call float @dx.op.loadInput.f32(i32 4, i32 1, i32 0, i8 2, i32 undef)
