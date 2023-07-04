@@ -43,7 +43,6 @@ define void @main() {
   ; 返回采样值                                                         
   %4 = call %dx.types.ResRet.f32 @dx.op.sample.f32(i32 60, %dx.types.Handle %2, %dx.types.Handle %1, float %3, float undef, float undef, float undef, i32 undef, i32 undef, i32 undef, float undef)
   
-
   %5 = extractvalue %dx.types.ResRet.f32 %4, 0
   %6 = extractvalue %dx.types.ResRet.f32 %4, 1
   %7 = extractvalue %dx.types.ResRet.f32 %4, 2
