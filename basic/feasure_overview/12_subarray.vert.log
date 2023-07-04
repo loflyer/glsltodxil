@@ -23,6 +23,7 @@ declare %dx.types.CBufRet.i32 @dx.extop.cbufferLoadLegacy.i32(i32, %dx.types.Han
 declare void @dx.op.storeOutput.f32(i32, i32, i32, i8, float) #1
 
 define void @main() {
+
   %1 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 2, i32 0, i32 0, i1 false)
   ;                                                              缓冲区索引   指针               加载的数据在缓冲区中的偏移量
   %2 = call %dx.types.CBufRet.i32 @dx.extop.cbufferLoadLegacy.i32(i32 275, %dx.types.Handle %1, i32 12)  ; 
@@ -45,7 +46,7 @@ define void @main() {
   %17 = extractvalue %dx.types.CBufRet.i32 %14, 2
   %18 = extractvalue %dx.types.CBufRet.i32 %14, 3
 
-  %19 = call %dx.types.CBufRet.i32 @dx.extop.cbufferLoadLegacy.i32(i32 275, %dx.types.Handle %1, i32 8); 9,10,11,12
+  %19 = call %dx.types.CBufRet.i32 @dx.extop.cbufferLoadLegacy.i32(i32 275, %dx.types.Handle %1, i32 8); 
   %20 = extractvalue %dx.types.CBufRet.i32 %19, 0
   %21 = extractvalue %dx.types.CBufRet.i32 %19, 1
   %22 = extractvalue %dx.types.CBufRet.i32 %19, 2
@@ -120,7 +121,9 @@ attributes #1 = { nounwind }
 !3 = !{!"vs", i32 6, i32 1}
 !4 = !{null, null, !5, null}
 !5 = !{!6}
-!6 = !{i32 0, %__ubo0* undef, !"__ubo0", i32 0, i32 0, i32 1, i32 64, null}
+;                                                              byteSize
+!6 = !{i32 0, %__ubo0* undef, !"__ubo0", i32 0, i32 0, i32 1,  i32 64,       null}
+
 !7 = !{i32 1, void ()* @main, !8}
 !8 = !{!9}
 !9 = !{i32 0, !10, !10}
