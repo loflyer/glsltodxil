@@ -30,10 +30,15 @@ declare %dx.types.CBufRet.i32 @dx.extop.cbufferLoadLegacy.i32(i32, %dx.types.Han
 declare void @dx.op.storeOutput.f32(i32, i32, i32, i8, float) #1
 
 define void @main() {
+  
+  ; CBV 资源
   %1 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 2, i32 0, i32 0, i1 false)
+  
+  
   %2 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 3, i32 0, i32 1, i1 false)
   %3 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 3, i32 1, i32 2, i1 false)
   %4 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 3, i32 1, i32 3, i1 false)
+
   %5 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 3, i32 2, i32 4, i1 false)
   %6 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 0, i32 0, i32 1, i1 false)
   %7 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 0, i32 1, i32 2, i1 false)
@@ -106,10 +111,12 @@ attributes #1 = { nounwind }
 !3 = !{!"ps", i32 6, i32 1}
 !4 = !{!5, null, !10, !12}
 !5 = !{!6, !8, !9}
+
 !6 = !{i32 0, %"class.Texture2D<vector<float, 4> >"* undef, !"lower@var_st1.smp2", i32 0, i32 1, i32 1, i32 2, i1 false, !7}
 !7 = !{i32 0, i32 9}
 !8 = !{i32 1, %"class.Texture2D<vector<float, 4> >"* undef, !"lower@var_st1.smp4", i32 0, i32 2, i32 2, i32 2, i1 false, !7}
 !9 = !{i32 2, %"class.Texture1D<vector<float, 4> >"* undef, !"tex0", i32 0, i32 4, i32 1, i32 1, i1 false, !7}
+
 !10 = !{!11}
 !11 = !{i32 0, %__ubo0* undef, !"__ubo0", i32 0, i32 0, i32 1, i32 16, null}
 !12 = !{!13, !14, !15}
