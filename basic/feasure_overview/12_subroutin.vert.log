@@ -33,26 +33,6 @@ void main()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 %dx.types.Handle = type { i8* }
 %dx.types.CBufRet.i32 = type { i32, i32, i32, i32 }
 %__ubo0 = type { [4 x float] }
