@@ -31,28 +31,39 @@ declare %dx.types.CBufRet.i32 @dx.extop.cbufferLoadLegacy.i32(i32, %dx.types.Han
 declare void @dx.op.storeOutput.f32(i32, i32, i32, i8, float) #2
 
 define void @main() {
+
+  ; uniform struct_test1 aa[2][2];
   %1 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 2, i32 0, i32 0, i1 false)
+
+  ; UBO0 
   %2 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 2, i32 1, i32 1, i1 false)
   %3 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 2, i32 1, i32 2, i1 false)
+ 
+  ; 
   %4 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 2, i32 2, i32 3, i1 false)
-
 
   ; mat23 2列 3 行
   %5 = call float @dx.op.loadInput.f32(i32 4, i32 0, i32 0, i8 0, i32 undef)
   %6 = call float @dx.op.loadInput.f32(i32 4, i32 0, i32 0, i8 1, i32 undef)
   %7 = call float @dx.op.loadInput.f32(i32 4, i32 0, i32 0, i8 2, i32 undef)
 
-
-  %8 = call %dx.types.CBufRet.i32 @dx.op.cbufferLoadLegacy.i32(i32 59, %dx.types.Handle %2, i32 6)
+  ;                                                                                        ubo      行偏移6  
+  ;                                                                                          偏移6行刚好到b[1]                                                                                     
+  %8 = call %dx.types.CBufRet.i32 @dx.op.cbufferLoadLegacy.i32(i32 59,     %dx.types.Handle %2,      i32 6) 
   %9 = extractvalue %dx.types.CBufRet.i32 %8, 0
   %10 = extractvalue %dx.types.CBufRet.i32 %8, 1
   %11 = extractvalue %dx.types.CBufRet.i32 %8, 2
   %12 = extractvalue %dx.types.CBufRet.i32 %8, 3
+
+  ;                                                                                              行偏移 36 (36个4字节 144 )
+  ;                                                                                              刚好对应 a[1][1]
   %13 = call %dx.types.CBufRet.i32 @dx.extop.cbufferLoadLegacy.i32(i32 275, %dx.types.Handle %1, i32 36)
   %14 = extractvalue %dx.types.CBufRet.i32 %13, 0
   %15 = extractvalue %dx.types.CBufRet.i32 %13, 1
   %16 = extractvalue %dx.types.CBufRet.i32 %13, 2
   %17 = extractvalue %dx.types.CBufRet.i32 %13, 3
+
+
   %18 = bitcast i32 %9 to float
   %19 = bitcast i32 %14 to float
   %20 = fadd fast float %18, %19
@@ -62,20 +73,25 @@ define void @main() {
   %24 = bitcast i32 %11 to float
   %25 = bitcast i32 %16 to float
   %26 = fadd fast float %24, %25
+  
+  ;                                                                                          行偏移为0 对应ub1.a
   %27 = call %dx.types.CBufRet.i32 @dx.op.cbufferLoadLegacy.i32(i32 59, %dx.types.Handle %4, i32 0)
   %28 = extractvalue %dx.types.CBufRet.i32 %27, 0
   %29 = extractvalue %dx.types.CBufRet.i32 %27, 1
   %30 = extractvalue %dx.types.CBufRet.i32 %27, 2
   %31 = extractvalue %dx.types.CBufRet.i32 %27, 3
+
   %32 = bitcast i32 %28 to float
   %33 = fadd fast float %20, %32
   %34 = bitcast i32 %29 to float
   %35 = fadd fast float %23, %34
   %36 = bitcast i32 %30 to float
+
   %37 = fadd fast float %26, %36
   %38 = fadd fast float %33, %5
   %39 = fadd fast float %35, %6
   %40 = fadd fast float %37, %7
+
   %41 = bitcast i32 %12 to float
   %42 = bitcast i32 1036831949 to float
   %43 = fadd fast float %41, %42
@@ -83,6 +99,7 @@ define void @main() {
   %45 = fadd fast float %43, %44
   %46 = bitcast i32 %31 to float
   %47 = fadd fast float %45, %46
+
   call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 0, float %38)
   call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 1, float %39)
   call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 2, float %40)
@@ -116,14 +133,13 @@ attributes #2 = { nounwind }
 !5 = !{!6, !7, !8}
 
 
-
 ;       id                                       spaceID   start    RangeSize  Byte-size    对应uniform struct_test1 aa[2][2];
 !6 = !{i32 0, %__ubo0* undef, !"__ubo0",        i32 0,    i32 0,    i32 1,    i32 192,    null}
 
 ; 这里面有个 [2x %__ubo1] *    应该是对应 UBO0    spaceID                       Byte-Size 112   代码中只用到了ubo[0] 所以ub0[1]被优化掉  所以Byte-Size = 112
 !7 = !{i32 1, [2 x %__ubo1]* undef, !"__ubo1",  i32 0,    i32 1,    i32 2,    i32 112,    null}
 
-;                                                                   
+;  对应 UBO1                                                                   Byte-Size 48 
 !8 = !{i32 2, %__ubo3* undef, !"__ubo3",        i32 0,    i32 3,    i32 1,    i32 48,     null}
 
 !9 = !{i32 1, void ()* @main, !10}
