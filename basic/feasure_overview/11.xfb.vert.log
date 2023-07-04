@@ -27,8 +27,12 @@ declare void @dx.op.storeOutput.f32(i32, i32, i32, i8, float) #1
 define void @main() {
   
   ; 3个ubo 
+  ; %1 是 Camera    %2 是 Texture
   %1 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 2, i32 0, i32 0, i1 false)
+  
+  ; Camera
   %2 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 2, i32 1, i32 1, i1 false)
+  ; texture
   %3 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 2, i32 2, i32 2, i1 false)
 
   ;   34行到57行取%2这个ubo1中所有component                                                   row-index
@@ -101,6 +105,10 @@ define void @main() {
   call void @dx.op.storeOutput.f32(i32 5, i32 2, i32 3, i8 2, float %48)
   %49 = bitcast i32 %23 to float
   call void @dx.op.storeOutput.f32(i32 5, i32 2, i32 3, i8 3, float %49)
+
+
+
+
   %50 = bitcast i32 %25 to float
   call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 0, float %50)
   %51 = bitcast i32 %26 to float
@@ -109,6 +117,8 @@ define void @main() {
   call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 2, float %52)
   %53 = bitcast i32 %28 to float
   call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 3, float %53)
+
+
   %54 = bitcast i32 %30 to float
   call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 0, float %54)
   %55 = bitcast i32 %31 to float
@@ -139,9 +149,15 @@ attributes #1 = { nounwind }
 !3 = !{!"vs", i32 6, i32 1}
 !4 = !{null, null, !5, null}
 !5 = !{!6, !7, !8}
-!6 = !{i32 0, %__ubo0* undef, !"__ubo0", i32 0, i32 0, i32 1, i32 0, null}
-!7 = !{i32 1, %__ubo1* undef, !"__ubo1", i32 0, i32 1, i32 1, i32 64, null}
-!8 = !{i32 2, %__ubo2* undef, !"__ubo2", i32 0, i32 2, i32 1, i32 32, null}
+
+;                                                                   __ubo0 byteSize = 0 用于其他目的              
+!6 = !{i32 0, %__ubo0* undef, !"__ubo0", i32 0,    i32 0,    i32 1,    i32 0,     null}
+;                                                        start    rangeSize   ByteSize  对应 uniform Camera                               
+!7 = !{i32 1,  %__ubo1* undef,   !"__ubo1",   i32 0,    i32 1,    i32 1,      i32 64,         null}
+;                                                                                       对应  uniform Texture
+!8 = !{i32 2,  %__ubo2* undef,   !"__ubo2",   i32 0,    i32 2,    i32 1,      i32 32,         null}
+
+
 !9 = !{i32 1, void ()* @main, !10}
 !10 = !{!11}
 !11 = !{i32 0, !12, !12}
@@ -149,13 +165,24 @@ attributes #1 = { nounwind }
 !13 = !{void ()* @main, !"main", !14, !4, !22}
 !14 = !{null, !15, null}
 !15 = !{!16, !18, !20}
-!16 = !{i32 0, !"TEXCOORD", i8 9, i8 0, !17, i8 2, i32 1, i8 4, i32 0, i8 0, !12}
+
+
+;                               F32      任意                         1行 4列           起始(0,0)                       
+!16 = !{i32 0, !"TEXCOORD",     i8 9,    i8 0,    !17,   i8 2,   i32 1,   i8 4,   i32 0,  i8 0,  !12}
+
 !17 = !{i32 0}
-!18 = !{i32 1, !"TEXCOORD", i8 9, i8 0, !19, i8 2, i32 1, i8 4, i32 1, i8 0, !12}
+;                                                                     1行4列                起始(1,0)                              
+!18 = !{i32 1, !"TEXCOORD",     i8 9,     i8 0,     !19,     i8 2,    i32 1,     i8 4,     i32 1,    i8 0,     !12}
 !19 = !{i32 1}
-!20 = !{i32 2, !"TEXCOORD", i8 9, i8 0, !21, i8 2, i32 4, i8 4, i32 2, i8 0, !12}
+
+;        id 2                                                 4行4列         起始(2,0)
+!20 = !{i32 2, !"TEXCOORD", i8 9,         i8 0, !21, i8 2,     i32 4, i8 4,  i32 2, i8 0,      !12}
+
+
+
 !21 = !{i32 2, i32 3, i32 4, i32 5}
 !22 = !{i32 0, i64 1048576}
+
 !23 = !{!"num_images", i32 0}
 !24 = !{!"num_ssbos", i32 0}
 !25 = !{!"float_controls_execution_mode", i32 0}
