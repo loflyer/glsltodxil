@@ -16,7 +16,7 @@ declare void @dx.op.storeOutput.f32(i32, i32, i32, i8, float) #2
 
 define void @main() {
   
-  ;资源  UAV SSBO                                                
+  ;资源  UAV SSBO            ID= 0                                     
   %1 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 1, i32 0, i32 0, i1 false)
 
   ;SV_VertexID        对应GLSL gl_Position  返回顶点索引  
