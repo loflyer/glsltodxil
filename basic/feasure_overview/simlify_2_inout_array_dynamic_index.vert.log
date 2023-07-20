@@ -1,6 +1,6 @@
-
-###################################################################################################
+##############################################################################################################
 #version 450
+
 uniform int index_u;
 
 layout (location = 0) in  vec4 inData;
@@ -8,11 +8,12 @@ layout (location = 0) out vec4 outData;
 
 void main()
 {
-    gl_Position    = vec4(1.0f, 1.0f, 1.0f, float(index_u));
-    outData.x = index_u + 1;
-    outData.yzw = inData.xyz ; 
+    gl_Position    = vec4(float(index_u), float(index_u),float(index_u), float(index_u));
+   
+    outData =  inData;
 }
-#####################################################################################################
+
+#################################################################################################################
 [D] begin to dump hw reg setting in compile arguments:
 [D] UsharpBase:   0
 [D] MaxUsharpReg: 0
@@ -52,21 +53,14 @@ define void @main() {
   %9 = extractvalue %dx.types.CBufRet.i32 %6, 2
   %10 = extractvalue %dx.types.CBufRet.i32 %6, 3
   %11 = sitofp i32 %7 to float
-  %12 = add i32 %7, 1
-  %13 = sitofp i32 %12 to float
-  %14 = bitcast float %11 to i32
-  %15 = bitcast i32 1065353216 to float
-  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 0, float %15)
-  %16 = bitcast i32 1065353216 to float
-  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 1, float %16)
-  %17 = bitcast i32 1065353216 to float
-  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 2, float %17)
-  %18 = bitcast i32 %14 to float
-  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 3, float %18)
-  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 0, float %13)
-  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 1, float %2)
-  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 2, float %3)
-  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 3, float %4)
+  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 0, float %11)
+  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 1, float %11)
+  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 2, float %11)
+  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 3, float %11)
+  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 0, float %2)
+  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 1, float %3)
+  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 2, float %4)
+  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 3, float %5)
   ret void
 }
 
@@ -545,34 +539,14 @@ Dump Patch Constant Info:
 [D]         VsNormalAttrCrfStart      :4
 [D]         ConstInfoFlag             :0
 [D] VS CrfCount        : 12 ShareMemSize= 0
-[D] VS InstrCount        : 8
+[D] VS InstrCount        : 4
 [D] begin to dump shader code:
 [D] --------------------------------------------------------------------------
-[D]    PC                         Instruction                                  Content   
-;                                                                                      r0  = r4 
-;                                                                                      r1 =  r5                                                                    
-  0x0000         0x4800000000000004 0x2000000000000000           MOV.rp2                   r0             ,r4  
-
-;                                                                                      vso[1].y = r0
-;                                                                                      vso[1].z = r1
-;                                                                                      vs0[1].w = r2 
-  0x0001         0x6000000000000000 0x2000000005000001           EMITF                     vso[1].yzw     ,r0    ; r0 应该存放的是input     
-
-;                                                                定点转浮点                                整数位32 小数位0
-;                                                                                                          cb0   这个应该是 uniform 变量 
-;                                                                                                          r0 = cb0   cb0  = index_u
-  0x0002         0x1740002000001000 0x0000000000000000           FX2FP.s.rne               r0             ,cb0.32.0   
-
-;                                                                                          r1 =  cb0 +1 ;
-  0x0003         0x0a40000000011000 0x0000001000000000           IADDI.s                   r1             ,1              ,cb0   
-;                                                            
-;                                                                定点转浮点                 vso[1]就是   out vec4 outData
-  0x0004         0x1740002000000001 0x86040ff004000001           FX2FP.s.rne.dly1          void           ,r1.32.0        
-                                                                +EMITF                     vso[1].x       ,fwd 
-
-;                                                                                         {vso[0].x,  vso[0].y,  vso[0].z} =  {1.0f,  1.0f,  1.0f}                                                                                  
-  0x0005         0x60000000000008f4 0x2000000004000000           EMITF                     vso[0].xyz     ,PDC_1F  
-;                                                                                          vso[0].w = r0                                                        
-  0x0006         0x6000000000000000 0x000000000f000000           EMITF.ve                  vso[0].w       ,r0             
-  0x0007         0xc300000000000000 0x0000000000000000           JUMP                      0              
+[D]    PC                         Instruction                                  Content         
+;                                                                
+;                                                                                                                                                                              
+  0x0000         0x6000000000000004 0x3000000004000001           EMITF                     vso[1].xyzw    ,r4             
+  0x0001         0x1740002000001000 0x0000000000000000           FX2FP.s.rne               r0             ,cb0.32.0       
+  0x0002         0x6000000000002000 0x300400000c000000           EMITF.dly1.ve             vso[0].xyzw    ,r0.rp0         
+  0x0003         0xc300000000000000 0x0000000000000000           JUMP                      0              
 [D] --------------------------------------------------------------------------
