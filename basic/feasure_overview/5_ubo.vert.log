@@ -530,15 +530,39 @@ Dump Patch Constant Info:
 [D] VS InstrCount        : 9
 [D] begin to dump shader code:
 [D] --------------------------------------------------------------------------
-[D]    PC                         Instruction                                  Content                                                                                             
-  0x0000         0x480000000000100c 0x2000000000000000           MOV.rp2                   r0             ,cb12           
-  0x0001         0x0300000000001004 0x2000000000000000           FADD.rp2                  r0             ,r0             ,cb4            
-  0x0002         0x0300000010000000 0x2000000000000000           FADD.rp2                  r0             ,cb0            ,r0             
+[D]    PC                         Instruction                                  Content   
+;                                                                寄存器移动指令
+;                                                                r0  = cb12
+;                                                                r1 = cb13
+;                                                                r2 = cb14                                                                                   
+  0x0000         0x480000000000100c 0x2000000000000000           MOV.rp2                   r0             ,cb12  
+; 
+;
+;                                                                r0  = r0 + cb4
+;                                                                r1 = r1 + cb5     
+;                                                                r2 = r2 + cb6                                      
+  0x0001         0x0300000000001004 0x2000000000000000           FADD.rp2                  r0             ,r0             ,cb4  
+
+;
+;                                                                r0 = cb0 + r0
+;                                                                r1 = cb1 + r1
+;                                                                r2 = cb2 + r2
+  0x0002         0x0300000010000000 0x2000000000000000           FADD.rp2                  r0             ,cb0            ,r0 
+
+;                                                                                          vso[0] 为输出变量 v4_data;
   0x0003         0x0300000000040000 0xa6000ff004000000           FADD.rp2                  void           ,r4             ,r0             
-                                                                +EMITF                     vso[0].xyz     ,fwd            
-  0x0004         0x4b0000003dcccccd 0x0000003000000000           MOVIMM                    r3             ,0x3dcccccd     
-  0x0005         0x0300000000031007 0x0004003000000000           FADD.dly1                 r3             ,r3             ,cb7            
-  0x0006         0x03000000100f0003 0x0004003000000000           FADD.dly1                 r3             ,cb15           ,r3             
+                                                                    +EMITF                     vso[0].xyz     ,fwd    
+
+
+;                                                                                          r3 = 0.1f
+                                                                                                          0.1f
+  0x0004         0x4b0000003dcccccd 0x0000003000000000           MOVIMM                    r3             ,0x3dcccccd   
+;                                                                                          r3 = r3 + cb7  
+  0x0005         0x0300000000031007 0x0004003000000000           FADD.dly1                 r3             ,r3             ,cb7  
+
+;                                                                                          r3 =  r3 + cb15
+  0x0006         0x03000000100f0003 0x0004003000000000           FADD.dly1                 r3             ,cb15           ,r3   
+
   0x0007         0x0300000010030003 0x86040ff00f000000           FADD.dly1                 void           ,cb3            ,r3             
                                                                 +EMITF.ve                  vso[0].w       ,fwd            
   0x0008         0xc300000000000000 0x0000000000000000           JUMP                      0              

@@ -549,8 +549,10 @@ Dump Patch Constant Info:
 [D] VS InstrCount        : 8
 [D] begin to dump shader code:
 [D] --------------------------------------------------------------------------
-[D]    PC                         Instruction                                  Content                                                                                             
-  0x0000         0x6000000000000004 0x3000000004000001           EMITF                     vso[1].xyzw    ,r4             
+[D]    PC                         Instruction                                  Content
+;                                                                                          {vso[1].x,vso[1].y,vso[1].z ,vso[1].w } =  {r4,r4,r4,r4}                                                                                                                                                                                   
+  0x0000         0x6000000000000004 0x3000000004000001           EMITF                     vso[1].xyzw    ,r4 
+              
   0x0001         0x0a40000000011000 0x0000000000000000           IADDI.s                   r0             ,1              ,cb0            
   0x0002         0x0a40000000021000 0x0000001000000000           IADDI.s                   r1             ,2              ,cb0            
   0x0003         0x1740002000000000 0x96000ff004000000           FX2FP.s.rne.rp1           void           ,r0.32.0        
