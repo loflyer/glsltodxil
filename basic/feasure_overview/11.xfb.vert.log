@@ -907,12 +907,24 @@ Dump Patch Constant Info:
 [D] VS InstrCount        : 7
 [D] begin to dump shader code:
 [D] --------------------------------------------------------------------------
-[D]    PC                         Instruction                                  Content                                                                                             
-  0x0000         0x6000000000001008 0x3000000004000002           EMITF                     vso[2].xyzw    ,cb8            
-  0x0001         0x600000000000100c 0x3000000004000003           EMITF                     vso[3].xyzw    ,cb12           
-  0x0002         0x6000000000001010 0x3000000004000004           EMITF                     vso[4].xyzw    ,cb16           
-  0x0003         0x6000000000001014 0x3000000004000005           EMITF                     vso[5].xyzw    ,cb20           
-  0x0004         0x6000000000001000 0x3000000004000000           EMITF                     vso[0].xyzw    ,cb0            
+[D]    PC                         Instruction                                  Content   
+;                                        
+;                                                                                    
+;                                                                                         {vso[2].x , vso[2].y, vso[2].z, vso[2].w}
+;                                                                                         = {cb8, cb9, cb10, cb11}                                                                                      
+  0x0000         0x6000000000001008 0x3000000004000002           EMITF                     vso[2].xyzw    ,cb8 
+     
+;                                                                                       {cb12, cb13, cb14, cb15}           
+  0x0001         0x600000000000100c 0x3000000004000003           EMITF                     vso[3].xyzw    ,cb12   
+
+;                                                                                       {cb16, cb17, cb18, cb19 }      
+  0x0002         0x6000000000001010 0x3000000004000004           EMITF                     vso[4].xyzw    ,cb16  
+
+;                                                                                       {cb20, cb21, cb22, cb23}
+  0x0003         0x6000000000001014 0x3000000004000005           EMITF                     vso[5].xyzw    , cb20   
+;                                                                                        {cb0 ,cb1, cb2, cb3}      
+  0x0004         0x6000000000001000 0x3000000004000000           EMITF                     vso[0].xyzw    ,cb0  
+;                                                                                         {cb4,  cb5,  cb6,  cb7}          
   0x0005         0x6000000000001004 0x300000000c000001           EMITF.ve                  vso[1].xyzw    ,cb4            
   0x0006         0xc300000000000000 0x0000000000000000           JUMP                      0              
 [D] --------------------------------------------------------------------------
