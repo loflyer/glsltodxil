@@ -22,5 +22,5 @@ void main()
     outblock1.p3 = mat4 (inData1[0],inData1[1],inData1[2],inData1[3]);
 
     outblock2.p4  = vec3(1.0f,1.0f,1.0f) ;
-    outblock2.p5[0] = outblock2.p4.x;
+    outblock2.p5[0] = inData2.x  *  inData2.y;
 }
