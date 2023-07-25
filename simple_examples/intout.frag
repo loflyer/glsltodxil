@@ -1,9 +1,9 @@
 #version 450
 
 
-layout (location = 0) in  vec4 inData[2];
+layout (location = 0) in  vec4 inData[];
 
-layout(location = 2) in {
+in {
     vec4 p1;
     vec2 p2;
     mat3x2 p3;
@@ -31,7 +31,7 @@ layout (location = 0) out vec4 outData[2];
 
 void main()
 {
-    outData[1].x = inData[1].x + inData[1].y;
+    // outData[1].x = inData[1].x + inData[1].y;
     // outblock1.m1[0] = inblock1.p1.x + inblock1.p1.z + inblock1.y *  inblock1.p3[0][0];
     // outblock1.m2 = inblock1.[0];
 
