@@ -18,7 +18,7 @@ uniform int   index;
 
 void main()
 {
-    outdata  = indata + vec4(ubo0[1].b0, 4.0f, 4.0f);
+    outdata  =  vec4(ubo0[1].b0, 4.0f, 4.0f);
     outdata2 = vec4(ubo1.b1[2], 1.0f, 1.0f, 1.0f);
-    gl_position = vec4(u4.yzw, 8.0f);
+    gl_Position = vec4(u4.yzw, 8.0f);
 }
