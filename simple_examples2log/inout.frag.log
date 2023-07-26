@@ -25,6 +25,7 @@ define void @main() {
   %7 = call float @dx.op.loadInput.f32(i32 4, i32 3, i32 0, i8 1, i32 undef)
   %8 = call float @dx.op.loadInput.f32(i32 4, i32 3, i32 0, i8 2, i32 undef)
   %9 = call float @dx.op.loadInput.f32(i32 4, i32 3, i32 0, i8 3, i32 undef)
+
   %10 = fmul fast float %6, %1
   %11 = fmul fast float %7, %2
   %12 = fmul fast float %8, %3
@@ -1037,11 +1038,19 @@ Dump Patch Constant Info:
 [D] PS InstrCount        : 8
 [D] begin to dump shader code:
 [D] --------------------------------------------------------------------------
-[D]    PC                         Instruction                                  Content                                                                                             
-  0x0000         0xa000000000000027 0x0000000000000000           RCP                       r0             ,r39            
-  0x0001         0x0204000000182000 0x2000001000000000           FMUL.rp2                  r1             ,r24            ,r0.rp0         
-  0x0002         0x0204000000042000 0x1000006000000000           FMUL.rp1                  r6             ,r4             ,r0.rp0         
-  0x0003         0x02040000001c2000 0x3000008000000000           FMUL.rp3                  r8             ,r28            ,r0.rp0         
+[D]    PC                         Instruction                                  Content   
+
+
+  0x0000         0xa000000000000027 0x0000000000000000           RCP                       r0             ,r39  
+
+                                                                
+  0x0001         0x0204000000182000 0x2000001000000000           FMUL.rp2                  r1             ,r24            , r0.rp0   
+
+  0x0002         0x0204000000042000 0x1000006000000000           FMUL.rp1                  r6             ,r4             , r0.rp0  
+
+  0x0003         0x02040000001c2000 0x3000008000000000           FMUL.rp3                  r8             ,r28            , r0.rp0  
+
+
   0x0004         0x0120000600010008 0x96800ff000000000           MAD.crf3.rp1              void           ,r6             ,r1             ,r8             
                                                                 +EMITC                     o[0].xy        ,fwd            
   0x0005         0x010008f40003000a 0x86800ff002000000           MAD                       void           ,PDC_1F         ,r3             ,r10            

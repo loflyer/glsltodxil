@@ -9,7 +9,7 @@ layout(rgba32f) uniform image2DRect img8;
 void main()
 {
   color = imageLoad(img8, ivec2(1,2));
-  imageStore(img8, icoord.xy, coord);
-  imageStore(img7[1], icoord.x, coord);
+  imageStore(img8, ivec2(1,2), coord);
+  imageStore(img7[1], 1, coord);
 }
 
