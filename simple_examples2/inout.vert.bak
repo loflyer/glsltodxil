@@ -4,11 +4,11 @@ layout (location = 1) in  vec4 inData1[4];
 layout (location = 0) in  vec2 inData2;
 
 out Output1{
-    vec2 p2;    // vso[2]
-    int  p3;   // vso[0]
+    vec2 p2;
+    int  p3;
 } outblock1;
 
-out float p5[3];  // vso[1]
+out float p5[3];
 
 uniform int index;
 

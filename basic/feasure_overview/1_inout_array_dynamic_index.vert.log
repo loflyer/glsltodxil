@@ -35,33 +35,42 @@ define void @main() {
   %5 = extractvalue %dx.types.CBufRet.i32 %2, 2
   %6 = extractvalue %dx.types.CBufRet.i32 %2, 3
 
-  %7 = sitofp i32 %3 to float
-  %8 = shl i32 %3, 1
-  %9 = add i32 %3, 1
+  %7 = sitofp i32 %3 to float  ; 这里只取了一个分量 , 因为只声明定义了一个int类型的变量 %3对应 index_u
+  %8 = shl i32 %3, 1  ; 对应 index_u *2
+  %9 = add i32 %3, 1  ; 对应 index_u + 1
+  
+  ; 取 inData[index_u + 1]
   %10 = call float @dx.op.loadInput.f32(i32 4, i32 0, i32 %9, i8 0, i32 undef)
   %11 = call float @dx.op.loadInput.f32(i32 4, i32 0, i32 %9, i8 1, i32 undef)
   %12 = call float @dx.op.loadInput.f32(i32 4, i32 0, i32 %9, i8 2, i32 undef)
   %13 = call float @dx.op.loadInput.f32(i32 4, i32 0, i32 %9, i8 3, i32 undef)
+
+  ; 对应   outData[index_u * 2] = inData[index_u+1];
   call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 %8, i8 0, float %10)
   call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 %8, i8 1, float %11)
   call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 %8, i8 2, float %12)
   call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 %8, i8 3, float %13)
+
+  ; 对应 inData[index_u];
   %14 = call float @dx.op.loadInput.f32(i32 4, i32 0, i32 %3, i8 0, i32 undef)
   %15 = call float @dx.op.loadInput.f32(i32 4, i32 0, i32 %3, i8 1, i32 undef)
   %16 = call float @dx.op.loadInput.f32(i32 4, i32 0, i32 %3, i8 2, i32 undef)
   %17 = call float @dx.op.loadInput.f32(i32 4, i32 0, i32 %3, i8 3, i32 undef)
+
+  ;  outData[index_u + 1] = inData[index_u];
   call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 %9, i8 0, float %14)
   call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 %9, i8 1, float %15)
   call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 %9, i8 2, float %16)
   call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 %9, i8 3, float %17)
-  %18 = bitcast float %7 to i32
-  %19 = bitcast i32 1065353216 to float
+
+  %18 = bitcast float %7 to i32  
+  %19 = bitcast i32 1065353216 to float   ;      1.0f
   call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 0, float %19)
-  %20 = bitcast i32 1065353216 to float
+  %20 = bitcast i32 1065353216 to float   ;      1.0f
   call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 1, float %20)
   %21 = bitcast i32 1065353216 to float
   call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 2, float %21)
-  %22 = bitcast i32 %18 to float
+  %22 = bitcast i32 %18 to float          ;      1.0f
   call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 0, i8 3, float %22)
   ret void
 }
@@ -87,7 +96,8 @@ attributes #2 = { nounwind }
 !4 = !{null, null, !5, null}
 !5 = !{!6}
 
-       ID 0                                                   16字节                            
+;       ID 0                                                   16字节     这里应该是一行的, 一行表示4分量的向量,所以是vec4                       
+; 但 这里的glsl只有一个int 类型的uniform 变量， 所以值只取这个4分量向量中的一个分量
 !6 = !{i32 0, %__ubo0* undef, !"__ubo0", i32 0, i32 0, i32 1, i32 16, null}
 !7 = !{i32 1, void ()* @main, !8}
 !8 = !{!9}
@@ -97,7 +107,7 @@ attributes #2 = { nounwind }
 !12 = !{!13, !16, null}
 !13 = !{!14}
 
-        ID                                             2行4列
+        ID                                             2行4列  对应inData
 !14 = !{i32 0, !"TEXCOORD", i8 9, i8 0, !15, i8 0, i32 2, i8 4, i32 0, i8 0, !10}
 !15 = !{i32 0, i32 1}
 !16 = !{!17, !19}
@@ -105,7 +115,7 @@ attributes #2 = { nounwind }
 !17 = !{i32 0, !"SV_Position", i8 9, i8 3, !18, i8 4, i32 1, i8 4, i32 0, i8 0, !10}
 !18 = !{i32 0}
        
-       ID                                            2行4列      起始行 1
+       ID                                              2行4列      起始行 1 对应outData
 !19 = !{i32 1, !"TEXCOORD", i8 9, i8 0, !15, i8 2, i32 2, i8 4, i32 1, i8 0, !10}
 
 !20 = !{i32 0, i64 1048576}
@@ -736,10 +746,10 @@ Dump Patch Constant Info:
   0x0002         0x0a40000200040001 0x0004001000000000           IADDI.s.dly1              r1             ,4              ,r1 << 2 
 
 ;                                                               重复3次, 延迟1
-;                                                                                       r12 = r[r1]         
-;                                                                                       r13 = r[r1+1]   
-;                                                                                       r14 = r[r1+ 2]  
-;                                                                                       r15 = r[r1+ 3] 
+;                                                                                         r12 = r[r1]         
+;                                                                                         r13 = r[r1+1]   
+;                                                                                         r14 = r[r1+2]  
+;                                                                                         r15 = r[r1+3]     ; 对应于 indata
   0x0003         0x4800000000000801 0x300400c000000000           MOV.rp3.dly1              r12            , r[r1]   
 
 ;                                                                                                                  
@@ -749,22 +759,22 @@ Dump Patch Constant Info:
 ;                                                                                          sr0 = r1         sr0 == 1
   0x0005         0x4800000000000001 0x00040e0000000000           MOV.dly1                  sr0            ,r1  
 
-;                                                                 r12输出到 vso[sr0]                                                 
+;                                                                 r12输出到 vso[sr0]       r12 r13 r14 r15 分别输出到 vso[sr0]. xyzw 中去      sr0 = 1                                     
   0x0006         0x6000000000e0000c 0x3008000004800000           EMITF.dly2.io             vso[sr0].xyzw  ,r12   
 ;                                                                 
 ;                                                                                          r1  = ( (cb0 << 2) + 4)
   0x0007         0x0a40000200041000 0x0000001000000000           IADDI.s                   r1             ,4              ,cb0 << 2   
 ;                                          
 ;                                                                                          r1 = r[r1]
-;                                                                                          r2 = {r[r1] +1}
-;                                                                                          r3 = {r[r1] + 2 }
-;                                                                                          r4 = {r[r1] + 3  }                        
-  0x0008         0x4800000000000801 0x3004001000000000           MOV.rp3.dly1              r1             ,r[r1]        
+;                                                                                          r2 = r[r1+1] 
+;                                                                                          r3 = r[r1+2] 
+;                                                                                          r4 = r[r1+3]                          
+  0x0008         0x4800000000000801 0x3004001000000000           MOV.rp3.dly1              r1             , r[r1]        
 ;            
-;                                                                                          r5  =    cb0+2
+;                                                                                          r5  =    cb0 + 2
   0x0009         0x0a40000000021000 0x0000005000000000           IADDI.s                   r5             ,2              ,cb0   
 ;                                                     
-;                                                                                          sr0 = r5         
+;                                                                                          sr0 = r5                                         sro =2
   0x000a         0x4800000000000005 0x00040e0000000000           MOV.dly1                  sr0            ,r5     
 ;                                                             
 ;                                                                io  indirect osharp
@@ -781,3 +791,4 @@ Dump Patch Constant Info:
   0x000d         0x6000000000000000 0x000000000f000000           EMITF.ve                  vso[0].w       , r0             
   0x000e         0xc300000000000000 0x0000000000000000           JUMP                      0              
 [D] --------------------------------------------------------------------------
+ 
