@@ -9,92 +9,90 @@
 [D] target datalayout = "e-m:e-p:32:32-i1:32-i8:32-i16:32-i32:32-i64:64-f16:32-f32:32-f64:64-n8:16:32:64"
 target triple = "dxil-ms-dx"
 
-%dx.types.Handle = type { i8* }
-%__ubo0 = type { [4 x float] }
-
-; Function Attrs: nounwind readonly
-declare %dx.types.Handle @dx.op.createHandle(i32, i8, i32, i32, i1) #0
+; Function Attrs: nounwind readnone
+declare i32 @dx.op.loadInput.i32(i32, i32, i32, i8, i32) #0
 
 ; Function Attrs: nounwind readnone
-declare float @dx.op.loadInput.f32(i32, i32, i32, i8, i32) #1
+declare float @dx.op.unary.f32(i32, float) #0
 
 ; Function Attrs: nounwind
-declare void @dx.op.storeOutput.f32(i32, i32, i32, i8, float) #2
-
-; Function Attrs: nounwind
-declare void @dx.op.storeOutput.i32(i32, i32, i32, i8, i32) #2
+declare void @dx.op.storeOutput.f32(i32, i32, i32, i8, float) #1
 
 define void @main() {
-  %1 = call %dx.types.Handle @dx.op.createHandle(i32 57, i8 2, i32 0, i32 0, i1 false)
-  ;  location == 0 的 vec2 inData2
-  %2 = call float @dx.op.loadInput.f32(i32 4, i32 0, i32 0, i8 0, i32 undef)
-  %3 = call float @dx.op.loadInput.f32(i32 4, i32 0, i32 0, i8 1, i32 undef)
+  br label %1
 
+1:                                                ; preds = %7, %0
+  %2 = phi i32 [ 0, %0 ], [ %14, %7 ]
+  %3 = call i32 @dx.op.loadInput.i32(i32 4, i32 0, i32 0, i8 0, i32 undef)
+  %4 = icmp sge i32 %2, %3
+  br i1 %4, label %5, label %6
 
-  %4 = call float @dx.op.loadInput.f32(i32 4, i32 1, i32 0, i8 0, i32 undef)
-  %5 = call float @dx.op.loadInput.f32(i32 4, i32 1, i32 0, i8 1, i32 undef)
-  %6 = call float @dx.op.loadInput.f32(i32 4, i32 1, i32 0, i8 2, i32 undef)
-  %7 = call float @dx.op.loadInput.f32(i32 4, i32 1, i32 0, i8 3, i32 undef)
+5:                                                ; preds = %1
+  br label %15
 
-  %8 = fptosi float %5 to i32
-  %9 = fmul fast float %2, %3
-  call void @dx.op.storeOutput.f32(i32 5, i32 2, i32 0, i8 0, float %2)
-  call void @dx.op.storeOutput.f32(i32 5, i32 2, i32 0, i8 1, float %3)
-  call void @dx.op.storeOutput.i32(i32 5, i32 0, i32 0, i8 0, i32 %8)
-  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 0, float %9)
-  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 1, float %9)
-  call void @dx.op.storeOutput.f32(i32 5, i32 1, i32 0, i8 2, float %9)
+6:                                                ; preds = %1
+  br label %7
+
+7:                                                ; preds = %6
+  %8 = sub i32 0, %2
+  %9 = sub i32 %3, %2
+  %10 = sitofp i32 %9 to float
+  %11 = bitcast i32 -1082130432 to float
+  %12 = fmul fast float %10, %11
+  %13 = call float @dx.op.unary.f32(i32 21, float %12)
+  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 %2, i8 0, float %13)
+  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 %2, i8 1, float %13)
+  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 %2, i8 2, float %13)
+  call void @dx.op.storeOutput.f32(i32 5, i32 0, i32 %2, i8 3, float %13)
+  %14 = add i32 %2, 1
+  br label %1
+
+15:                                               ; preds = %5
   ret void
 }
 
-attributes #0 = { nounwind readonly }
-attributes #1 = { nounwind readnone }
-attributes #2 = { nounwind }
+attributes #0 = { nounwind readnone }
+attributes #1 = { nounwind }
 
 !llvm.ident = !{!0}
 !dx.version = !{!1}
 !dx.valver = !{!2}
 !dx.shaderModel = !{!3}
-!dx.resources = !{!4}
-!dx.typeAnnotations = !{!7}
-!dx.entryPoints = !{!11}
-!dx.source.contents = !{!24, !25, !26}
+!dx.typeAnnotations = !{!4}
+!dx.entryPoints = !{!8}
+!dx.source.contents = !{!17, !18, !19, !20, !21, !22, !23, !24}
 !dx.vk.xfb = !{}
 
 !0 = !{!"Mesa version 22.04@release"}
 !1 = !{i32 1, i32 1}
 !2 = !{i32 1, i32 4}
-!3 = !{!"vs", i32 6, i32 1}
-!4 = !{null, null, !5, null}
+!3 = !{!"ps", i32 6, i32 1}
+!4 = !{i32 1, void ()* @main, !5}
 !5 = !{!6}
-!6 = !{i32 0, %__ubo0* undef, !"__ubo0", i32 0, i32 0, i32 1, i32 16, null}
-!7 = !{i32 1, void ()* @main, !8}
-!8 = !{!9}
-!9 = !{i32 0, !10, !10}
-!10 = !{}
-!11 = !{void ()* @main, !"main", !12, !4, !23}
-!12 = !{!13, !18, null}
-!13 = !{!14, !16}
-!14 = !{i32 0, !"TEXCOORD", i8 9, i8 0, !15, i8 0, i32 1, i8 2, i32 0, i8 0, !10}
-!15 = !{i32 0}
-!16 = !{i32 1, !"TEXCOORD", i8 9, i8 0, !17, i8 0, i32 1, i8 4, i32 1, i8 0, !10}
-!17 = !{i32 1}
-!18 = !{!19, !20, !21}
-!19 = !{i32 0, !"TEXCOORD", i8 4, i8 0, !15, i8 2, i32 1, i8 1, i32 0, i8 0, !10}
-!20 = !{i32 1, !"TEXCOORD", i8 9, i8 0, !17, i8 2, i32 1, i8 3, i32 1, i8 0, !10}
-!21 = !{i32 2, !"TEXCOORD", i8 9, i8 0, !22, i8 2, i32 1, i8 2, i32 2, i8 0, !10}
-!22 = !{i32 2}
-!23 = !{i32 0, i64 1048576}
-!24 = !{!"num_images", i32 0}
-!25 = !{!"num_ssbos", i32 0}
-!26 = !{!"float_controls_execution_mode", i32 0}
+!6 = !{i32 0, !7, !7}
+!7 = !{}
+!8 = !{void ()* @main, !"main", !9, null, !16}
+!9 = !{!10, !13, null}
+!10 = !{!11}
+!11 = !{i32 0, !"TEXCOORD", i8 4, i8 0, !12, i8 1, i32 1, i8 1, i32 0, i8 0, !7}
+!12 = !{i32 0}
+!13 = !{!14}
+!14 = !{i32 0, !"SV_Target", i8 9, i8 16, !15, i8 0, i32 3, i8 4, i32 0, i8 0, !7}
+!15 = !{i32 0, i32 1, i32 2}
+!16 = !{i32 0, i64 1048576}
+!17 = !{!"num_images", i32 0}
+!18 = !{!"num_ssbos", i32 0}
+!19 = !{!"float_controls_execution_mode", i32 0}
+!20 = !{!"color_dual_source", i32 0}
+!21 = !{!"origin_upper_left", i32 0}
+!22 = !{!"pixel_center_integer", i32 0}
+!23 = !{!"early_fragment_tests", i32 0}
+!24 = !{!"post_depth_coverage", i32 0}
 
 
-[D] CrfCntForInput equals CrfCount + HW_REG_START
-[D] CrfCntForInput for VS push mode: 8
 [D] ------------------------Begin Dump SC Shader Info------------------------ [0000]
 [D] SCShaderVersion:                  :97
-[D] SCShaderType:                     :0
+[D] SCShaderType:                     :4
 [D] Dump Shader Flags:
 [D]         bOutputDepth              :0
 [D]         bOutputStencil            :0
@@ -165,9 +163,9 @@ attributes #2 = { nounwind }
 [D] 
 
 Dump Input Info:
-[D] EntryCount              :6
-[D] UsedBitMask             :3
-[D] HwVectorCount           :2
+[D] EntryCount              :1
+[D] UsedBitMask             :1
+[D] HwVectorCount           :1
 [D] Entry 0------------------------------->
 [D] Semantic=VARYING_DX10	55
 [D] SemanticIndex           :0
@@ -189,10 +187,37 @@ Dump Input Info:
 [D] bCanPack                :1
 [D] ExtendedIndex           :0
 [D] Shared                  :0
-[D] Entry 1------------------------------->
-[D] Semantic=VARYING_DX10	55
+[D] 
+
+Dump Output Info:
+[D] EntryCount              :12
+[D] UsedBitMask             :7
+[D] HwVectorCount           :3
+[D] Entry 0------------------------------->
+[D] Semantic=COLOR	8
 [D] SemanticIndex           :0
-[D] HwRegNo                 :5
+[D] HwRegNo                 :0
+[D] IoIndex                 :0
+[D] ChannelIndex            :0
+[D] Used                    :1
+[D] bInterpolate            :0
+[D] bCentroid               :0
+[D] bPerspective            :0
+[D] bSampleFreq             :0
+[D] bIntVarying             :0
+[D] bUIntVarying            :0
+[D] bIntpAtCentroid         :0
+[D] bIntpAtCenter           :0
+[D] bIntpAtOffsetPxPy       :0
+[D] bIntpAtSample           :0
+[D] b64bits                 :0
+[D] bCanPack                :0
+[D] ExtendedIndex           :0
+[D] Shared                  :0
+[D] Entry 1------------------------------->
+[D] Semantic=COLOR	8
+[D] SemanticIndex           :0
+[D] HwRegNo                 :0
 [D] IoIndex                 :0
 [D] ChannelIndex            :1
 [D] Used                    :1
@@ -207,13 +232,55 @@ Dump Input Info:
 [D] bIntpAtOffsetPxPy       :0
 [D] bIntpAtSample           :0
 [D] b64bits                 :0
-[D] bCanPack                :1
+[D] bCanPack                :0
 [D] ExtendedIndex           :0
 [D] Shared                  :0
 [D] Entry 2------------------------------->
-[D] Semantic=VARYING_DX10	55
+[D] Semantic=COLOR	8
+[D] SemanticIndex           :0
+[D] HwRegNo                 :0
+[D] IoIndex                 :0
+[D] ChannelIndex            :2
+[D] Used                    :1
+[D] bInterpolate            :0
+[D] bCentroid               :0
+[D] bPerspective            :0
+[D] bSampleFreq             :0
+[D] bIntVarying             :0
+[D] bUIntVarying            :0
+[D] bIntpAtCentroid         :0
+[D] bIntpAtCenter           :0
+[D] bIntpAtOffsetPxPy       :0
+[D] bIntpAtSample           :0
+[D] b64bits                 :0
+[D] bCanPack                :0
+[D] ExtendedIndex           :0
+[D] Shared                  :0
+[D] Entry 3------------------------------->
+[D] Semantic=COLOR	8
+[D] SemanticIndex           :0
+[D] HwRegNo                 :0
+[D] IoIndex                 :0
+[D] ChannelIndex            :3
+[D] Used                    :1
+[D] bInterpolate            :0
+[D] bCentroid               :0
+[D] bPerspective            :0
+[D] bSampleFreq             :0
+[D] bIntVarying             :0
+[D] bUIntVarying            :0
+[D] bIntpAtCentroid         :0
+[D] bIntpAtCenter           :0
+[D] bIntpAtOffsetPxPy       :0
+[D] bIntpAtSample           :0
+[D] b64bits                 :0
+[D] bCanPack                :0
+[D] ExtendedIndex           :0
+[D] Shared                  :0
+[D] Entry 4------------------------------->
+[D] Semantic=COLOR	8
 [D] SemanticIndex           :1
-[D] HwRegNo                 :8
+[D] HwRegNo                 :0
 [D] IoIndex                 :1
 [D] ChannelIndex            :0
 [D] Used                    :1
@@ -228,13 +295,13 @@ Dump Input Info:
 [D] bIntpAtOffsetPxPy       :0
 [D] bIntpAtSample           :0
 [D] b64bits                 :0
-[D] bCanPack                :1
+[D] bCanPack                :0
 [D] ExtendedIndex           :0
 [D] Shared                  :0
-[D] Entry 3------------------------------->
-[D] Semantic=VARYING_DX10	55
+[D] Entry 5------------------------------->
+[D] Semantic=COLOR	8
 [D] SemanticIndex           :1
-[D] HwRegNo                 :9
+[D] HwRegNo                 :0
 [D] IoIndex                 :1
 [D] ChannelIndex            :1
 [D] Used                    :1
@@ -249,13 +316,13 @@ Dump Input Info:
 [D] bIntpAtOffsetPxPy       :0
 [D] bIntpAtSample           :0
 [D] b64bits                 :0
-[D] bCanPack                :1
+[D] bCanPack                :0
 [D] ExtendedIndex           :0
 [D] Shared                  :0
-[D] Entry 4------------------------------->
-[D] Semantic=VARYING_DX10	55
+[D] Entry 6------------------------------->
+[D] Semantic=COLOR	8
 [D] SemanticIndex           :1
-[D] HwRegNo                 :10
+[D] HwRegNo                 :0
 [D] IoIndex                 :1
 [D] ChannelIndex            :2
 [D] Used                    :1
@@ -270,13 +337,13 @@ Dump Input Info:
 [D] bIntpAtOffsetPxPy       :0
 [D] bIntpAtSample           :0
 [D] b64bits                 :0
-[D] bCanPack                :1
+[D] bCanPack                :0
 [D] ExtendedIndex           :0
 [D] Shared                  :0
-[D] Entry 5------------------------------->
-[D] Semantic=VARYING_DX10	55
+[D] Entry 7------------------------------->
+[D] Semantic=COLOR	8
 [D] SemanticIndex           :1
-[D] HwRegNo                 :11
+[D] HwRegNo                 :0
 [D] IoIndex                 :1
 [D] ChannelIndex            :3
 [D] Used                    :1
@@ -291,25 +358,19 @@ Dump Input Info:
 [D] bIntpAtOffsetPxPy       :0
 [D] bIntpAtSample           :0
 [D] b64bits                 :0
-[D] bCanPack                :1
+[D] bCanPack                :0
 [D] ExtendedIndex           :0
 [D] Shared                  :0
-[D] 
-
-Dump Output Info:
-[D] EntryCount              :6
-[D] UsedBitMask             :7
-[D] HwVectorCount           :3
-[D] Entry 0------------------------------->
-[D] Semantic=VARYING_DX10	55
-[D] SemanticIndex           :0
+[D] Entry 8------------------------------->
+[D] Semantic=COLOR	8
+[D] SemanticIndex           :2
 [D] HwRegNo                 :0
-[D] IoIndex                 :0
+[D] IoIndex                 :2
 [D] ChannelIndex            :0
 [D] Used                    :1
-[D] bInterpolate            :1
+[D] bInterpolate            :0
 [D] bCentroid               :0
-[D] bPerspective            :1
+[D] bPerspective            :0
 [D] bSampleFreq             :0
 [D] bIntVarying             :0
 [D] bUIntVarying            :0
@@ -318,40 +379,19 @@ Dump Output Info:
 [D] bIntpAtOffsetPxPy       :0
 [D] bIntpAtSample           :0
 [D] b64bits                 :0
-[D] bCanPack                :1
+[D] bCanPack                :0
 [D] ExtendedIndex           :0
 [D] Shared                  :0
-[D] Entry 1------------------------------->
-[D] Semantic=VARYING_DX10	55
-[D] SemanticIndex           :1
+[D] Entry 9------------------------------->
+[D] Semantic=COLOR	8
+[D] SemanticIndex           :2
 [D] HwRegNo                 :0
-[D] IoIndex                 :1
-[D] ChannelIndex            :0
-[D] Used                    :1
-[D] bInterpolate            :1
-[D] bCentroid               :0
-[D] bPerspective            :1
-[D] bSampleFreq             :0
-[D] bIntVarying             :0
-[D] bUIntVarying            :0
-[D] bIntpAtCentroid         :0
-[D] bIntpAtCenter           :0
-[D] bIntpAtOffsetPxPy       :0
-[D] bIntpAtSample           :0
-[D] b64bits                 :0
-[D] bCanPack                :1
-[D] ExtendedIndex           :0
-[D] Shared                  :0
-[D] Entry 2------------------------------->
-[D] Semantic=VARYING_DX10	55
-[D] SemanticIndex           :1
-[D] HwRegNo                 :0
-[D] IoIndex                 :1
+[D] IoIndex                 :2
 [D] ChannelIndex            :1
 [D] Used                    :1
-[D] bInterpolate            :1
+[D] bInterpolate            :0
 [D] bCentroid               :0
-[D] bPerspective            :1
+[D] bPerspective            :0
 [D] bSampleFreq             :0
 [D] bIntVarying             :0
 [D] bUIntVarying            :0
@@ -360,19 +400,19 @@ Dump Output Info:
 [D] bIntpAtOffsetPxPy       :0
 [D] bIntpAtSample           :0
 [D] b64bits                 :0
-[D] bCanPack                :1
+[D] bCanPack                :0
 [D] ExtendedIndex           :0
 [D] Shared                  :0
-[D] Entry 3------------------------------->
-[D] Semantic=VARYING_DX10	55
-[D] SemanticIndex           :1
+[D] Entry 10------------------------------->
+[D] Semantic=COLOR	8
+[D] SemanticIndex           :2
 [D] HwRegNo                 :0
-[D] IoIndex                 :1
+[D] IoIndex                 :2
 [D] ChannelIndex            :2
 [D] Used                    :1
-[D] bInterpolate            :1
+[D] bInterpolate            :0
 [D] bCentroid               :0
-[D] bPerspective            :1
+[D] bPerspective            :0
 [D] bSampleFreq             :0
 [D] bIntVarying             :0
 [D] bUIntVarying            :0
@@ -381,19 +421,19 @@ Dump Output Info:
 [D] bIntpAtOffsetPxPy       :0
 [D] bIntpAtSample           :0
 [D] b64bits                 :0
-[D] bCanPack                :1
+[D] bCanPack                :0
 [D] ExtendedIndex           :0
 [D] Shared                  :0
-[D] Entry 4------------------------------->
-[D] Semantic=VARYING_DX10	55
+[D] Entry 11------------------------------->
+[D] Semantic=COLOR	8
 [D] SemanticIndex           :2
 [D] HwRegNo                 :0
 [D] IoIndex                 :2
-[D] ChannelIndex            :0
+[D] ChannelIndex            :3
 [D] Used                    :1
-[D] bInterpolate            :1
+[D] bInterpolate            :0
 [D] bCentroid               :0
-[D] bPerspective            :1
+[D] bPerspective            :0
 [D] bSampleFreq             :0
 [D] bIntVarying             :0
 [D] bUIntVarying            :0
@@ -402,28 +442,7 @@ Dump Output Info:
 [D] bIntpAtOffsetPxPy       :0
 [D] bIntpAtSample           :0
 [D] b64bits                 :0
-[D] bCanPack                :1
-[D] ExtendedIndex           :0
-[D] Shared                  :0
-[D] Entry 5------------------------------->
-[D] Semantic=VARYING_DX10	55
-[D] SemanticIndex           :2
-[D] HwRegNo                 :0
-[D] IoIndex                 :2
-[D] ChannelIndex            :1
-[D] Used                    :1
-[D] bInterpolate            :1
-[D] bCentroid               :0
-[D] bPerspective            :1
-[D] bSampleFreq             :0
-[D] bIntVarying             :0
-[D] bUIntVarying            :0
-[D] bIntpAtCentroid         :0
-[D] bIntpAtCenter           :0
-[D] bIntpAtOffsetPxPy       :0
-[D] bIntpAtSample           :0
-[D] b64bits                 :0
-[D] bCanPack                :1
+[D] bCanPack                :0
 [D] ExtendedIndex           :0
 [D] Shared                  :0
 [D] 
@@ -433,22 +452,7 @@ Dump Patch Constant Info:
 [D] UsedBitMask             :0
 [D] HwVectorCount           :0
 [D] Dump Cbv  Info:
-[D] ResRangeCount              :1
-[D]         ResRangeID                 :0
-[D]         ResIndex                   :0
-[D]         ResCount                   :1
-[D]         HwRegNo                    :0
-[D]         ResKind                    :0
-[D]         ComponentType              :0
-[D]         HeapIndex                  :0
-[D]         SpaceID                    :0
-[D]         SpaceID                    :0
-[D]         Reduction                  :0
-[D]         GlobalCoherent             :0
-[D]         Rov                        :0
-[D]         MappedToTSharp             :0
-[D]         BufSize                    :16
-[D]         StartInCb                  :0
+[D] ResRangeCount              :0
 [D] Dump Srv  Info:
 [D] ResRangeCount              :0
 [D] Dump Sampler  Info:
@@ -523,17 +527,33 @@ Dump Patch Constant Info:
 [D]         PMSize                    :0
 [D]         DxBufCounterMask          :0
 [D]         DxBufCounterResID         :0
-[D]         VsNormalAttrCrfStart      :4
+[D]         VsNormalAttrCrfStart      :0
+[D]         ColorOutputMask           :7
 [D]         ConstInfoFlag             :0
-[D] VS CrfCount        : 12 ShareMemSize= 0
-[D] VS InstrCount        : 5
+[D] PS CrfCount        : 16 ShareMemSize= 0
+[D] PS InstrCount        : 19
 [D] begin to dump shader code:
 [D] --------------------------------------------------------------------------
 [D]    PC                         Instruction                                  Content                                                                                             
-  0x0000         0x6000000000000004 0x1000000004000002           EMITF                     vso[2].xy      ,r4             
-  0x0001         0x16c0c02000000009 0x86000ff004000000           FP2FX.sat.s.rz            void.32.0      ,r9             
-                                                                +EMITF                     vso[0].x       ,fwd            
-  0x0002         0x0204000000050004 0x0000000000000000           FMUL                      r0             ,r5             ,r4             
-  0x0003         0x6000000000002000 0x200400000c000001           EMITF.dly1.ve             vso[1].xyz     ,r0.rp0         
-  0x0004         0xc300000000000000 0x0000000000000000           JUMP                      0              
+  0x0000         0x3940200000010004 0x00000f3000000000           ICMPI.s.lt                p3             ,1              ,r4             
+  0x0001         0xcb000800000e00f3 0x0000400000000000    @p1    BA.ikeep.ds1              .LABEL_0       ,p3             
+  0x0002         0x48000000000080f3 0x00000f2000000000               MOV                   p2             ,~p3            
+  0x0003         0x4800000000000004 0x0000800000000000    @p2    MOV                       r0             ,r4             
+  0x0004         0x48000000000008f0 0x0000801000000000    @p2    MOV                       r1             ,PDC_0          
+                 __________________    .LABEL_1:
+  0x0005         0x1740002000000000 0x0000802000000000    @p2    FX2FP.s.rne               r2             ,r0.32.0        
+  0x0006         0xa400000000008002 0x0004800020000000    @p2    EXP.dly1                  r2             ,-r2            
+  0x0007         0x0a00000200042001 0x0000803000000000    @p2    IADDI                     r3             ,0x4            ,r1.rp0 << 2    
+  0x0008         0x4800000000002002 0x3004903000000000    @p2    MOV.rp3.dly1              r[r3]          ,r2.rp0         
+  0x0009         0x0a400000ffff0000 0x0004800000000000    @p2    IADDI.s.dly1              r0             ,-1             ,r0             
+  0x000a         0x3940500000000000 0x00048f3000000000    @p2    ICMPI.s.ne.dly1           p3             ,0              ,r0             
+  0x000b         0x2f00000000f200f3 0x00000f3000000000           AND                       p3             ,p2             ,p3             
+  0x000c         0xcc001001fff900f3 0x0000c00000000000    @p3    B.ikeep.ds2               .LABEL_1       ,p3             
+  0x000d         0x0a40000000010001 0x0000801000000000        @p2    IADDI.s               r1             ,1              ,r1             
+  0x000e         0x48000000000000f3 0x00000f2000000000               MOV                   p2             ,p3             
+                 __________________    .LABEL_0:
+  0x000f         0x6800000000000004 0x3000000008000000           EMITC.rte                 o[0].xyzw      ,r4             
+  0x0010         0x6800000000000008 0x3000000008000001           EMITC.rte                 o[1].xyzw      ,r8             
+  0x0011         0x680000000000000c 0x3000000008000002           EMITC.rte                 o[2].xyzw      ,r12            
+  0x0012         0xc340000000000000 0x0000000000000000           JUMP.ps                   0              
 [D] --------------------------------------------------------------------------

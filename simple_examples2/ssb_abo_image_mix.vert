@@ -11,7 +11,7 @@ buffer myBuffer {
 uniform int index;
 
 layout(binding = 1, rgba32f) uniform image2DRect img8[2];
-layout(binding =1, offset=0) uniform atomic_uint ac;
+layout(binding =2, offset=0) uniform atomic_uint ac;
 
 void main()
 {

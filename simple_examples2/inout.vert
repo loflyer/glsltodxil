@@ -17,6 +17,10 @@ void main()
 
     outblock1.p2 =  inData2;
     outblock1.p3 =  int(inData1[0].y);
-
     p5[index] = inData2.x  *  inData2.y;
 }
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> ad3b04fddb98a52a64496623e9df99c641b5cd96
