@@ -17,7 +17,6 @@ layout(std430) buffer myBuffer2 {
 
 void main()
 {
-
      buf.a    = vec4(1.0f,2.0f,3.0f,4.0f);
      buf.m[1] = 17;
      buf.v3   = udata3;
