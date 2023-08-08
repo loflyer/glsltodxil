@@ -1,0 +1,122 @@
+
+
+EMITC                     o[2].x         ,PDC_0  
+##  o[2].x  = 0
+MOV.cdly                   r36            ,PDC_0
+##  r[36] =0
+EMITC                     o[0].x         ,PDC_0 
+##  o[0].x  = 0
+ICMPI.s.lt                p2             ,1              ,r4
+## p2 =  (r4 < 1)
+@p1    BA.ikeep.pdly.ds1         .LABEL_0       ,p2   
+        MOV.cdly              p3             ,~p2
+##  若p2全为1, 跳转 .LABEL_0  p3 = 0\
+##  若p2不全为1(p2 = 0),不跳转， p3 =1
+
+MOVIMM.pdly.cdly          p2             ,0x0  
+## p2 = 0
+
+@p3    FX2FP.s.rne               r0             ,r4.32.0  
+## r0 = r4   r0 = attach
+
+@p3    EXP.dly1                  r0             ,-r0 
+##  r0 = 2 ^ -r0
+
+ @p3    EMITC                     o[0].xyzw      ,r0.rp0
+ ## o[0] = (r0,r0,r0,r0)
+
+ @p3    ICMPI.s.cdly.lt           p4             ,2              ,r4
+ ##     p4 = (r4 < 2) 
+
+ @p3    AND.pdly                  p2             ,p3             ,~p4
+ ##     p2 = (p3 & ~p4)
+
+ AND.pdly.cdly             p3             ,p4             ,p3  
+ ## p3 = (p4 & p3)
+
+ @p1    BA.ikeep.pdly             .LABEL_0       ,p3
+ ##  跳转到.LABEL_0
+
+MOVIMM                    p3             ,0x0   
+## p3 = 0
+
+@p2    IADDI.s                   r0             ,-1             ,r4
+## r0 = r4 - 1
+
+@p2    FX2FP.s.cdly.rne.dly1     r0             ,r0.32.0
+## r0 = float(r0)
+
+@p2    EXP.dly1                  r0             ,-r0
+## r0 = 2 ^ -r0
+
+@p2    MOV.rp3                   r36            ,r0.rp0
+## (r36, r37,r38 , r39) = (r0,r0,r0,r0)
+
+@p2    ICMPI.s.lt                p4             ,3              ,r4 
+##   p4 = (r4 < 3)
+
+@p2    AND.pdly                  p3             ,p2             ,~p4 
+##   p3 = (p2 & ~p4)
+
+@p3    IADDI.s.pdly              r0             ,-2             ,r4 
+##   r0 = r4 - 2
+
+@p3    FX2FP.s.cdly.rne.dly1     r0             ,r0.32.0
+## r0 = float(r0)
+
+@p3    EXP.dly1                  r0             ,-r0  
+## r0 = 2 ^ -r0
+
+@p3    EMITC                     o[2].xyzw      ,r0.rp0
+## o[2] = (r0,r0,r0,r0)
+
+_______________________________.LABEL_0:
+@!p0   EMITC.rte                 o[2].x         ,PDC_0
+## o[2].x = 0
+
+MOV                       r36            ,PDC_0  
+## r36 = 0
+
+@!p0   EMITC.rte                 o[0].x         ,PDC_0
+## o[0].x = PDC_0
+
+CLDI.b32                  r24.xyzw.ln0   ,[0x0]          ,void           ,cbv[1]
+## 从cbv[1]中的[0x0]地址处 写入到 r24的 ln0 ,ln1 ,ln2.ln3
+
+SHUF.l8.dly2              r27            ,r24.0x3.0x0.0xff
+## 对r24 lane 值进行 shuffle
+SHUF.l8.dly2              r26            ,r24.0x3.0x0.0xaa
+SHUF.l8.dly2              r25            ,r24.0x3.0x0.0x55
+SHUF.l8.dly2              r24            ,r24.0x3.0x0.0x0
+
+MOV.cdly.rp3.dly1         r111           ,r24
+
+
+CHK.bld                   r72
+## ???
+
+MOV.cdly.rp2.dly1         r16            ,r111
+## r16 = r111
+
+MOV.rp2                   r20            ,PDC_0
+## r20 = 0
+
+MOV                       r23            ,PDC_0
+## r23 = 0
+
+FMUL.crf2.rp2             r12            ,r16            ,r36
+r12 = r16 * r36
+
+MAD.crf3.rp2              r36            ,r12            ,r20            ,r72   
+## r36 = r12 + r20 * r72
+
+FMUL.crf2                 r15            ,r19            ,r39 
+## ??? crf2
+
+MAD.crf3.cdly.dly1        r39            ,r15            ,r23            ,r75  
+##  r39 = r23 * r75 + r15
+
+EMITC.rte                 o[1].xyzw      ,r36     
+##  o[1] = (r36,r37,r38,r39)
+
+JUMP.ps                   0 
